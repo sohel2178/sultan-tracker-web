@@ -1,13 +1,13 @@
-import bcrypt from "bcryptjs";
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import Github from "next-auth/providers/github";
-import Google from "next-auth/providers/google";
+import bcrypt from 'bcrypt';
+import NextAuth from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
+import Github from 'next-auth/providers/github';
+import Google from 'next-auth/providers/google';
 
-import { IAccountDoc } from "./database/account.model";
-import { IUserDoc } from "./database/user.model";
-import { api } from "./lib/api";
-import { SignInSchema } from "./lib/validation";
+import { IAccountDoc } from './database/account.model';
+import { IUserDoc } from './database/user.model';
+import { api } from './lib/api';
+import { SignInSchema } from './lib/validation';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -15,7 +15,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google,
     Credentials({
       async authorize(credentials) {
-        console.log("authorize Called");
+        console.log('authorize Called');
         const validatedFields = SignInSchema.safeParse(credentials);
 
         if (validatedFields.success) {
@@ -67,7 +67,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account) {
         const { data: existingAccount, success } =
           (await api.accounts.getByProvider(
-            account.type === "credentials"
+            account.type === 'credentials'
               ? token.email!
               : account.providerAccountId
           )) as ActionResponse<IAccountDoc>;
@@ -86,7 +86,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async signIn({ user, account, profile }) {
       // console.log("signIn Called");
-      if (account?.type === "credentials") return true;
+      if (account?.type === 'credentials') return true;
       if (!account || !user) return false;
 
       // console.log(profile, "Profile");
@@ -96,14 +96,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: user.email!,
         image: user.image!,
         username:
-          account.provider === "github"
+          account.provider === 'github'
             ? (profile?.login as string)
             : (user.name?.toLowerCase() as string),
       };
 
       const { success } = (await api.auth.oAuthSignIn({
         user: userInfo,
-        provider: account.provider as "github" | "google",
+        provider: account.provider as 'github' | 'google',
         providerAccountId: account.providerAccountId as string,
       })) as ActionResponse;
 
