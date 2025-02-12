@@ -1,16 +1,16 @@
-"use server";
+'use server';
 
-import bcrypt from "bcryptjs";
-import mongoose from "mongoose";
+import bcrypt from 'bcrypt';
+import mongoose from 'mongoose';
 
-import { signIn } from "@/auth";
-import Account from "@/database/account.model";
-import User from "@/database/user.model";
+import { signIn } from '@/auth';
+import Account from '@/database/account.model';
+import User from '@/database/user.model';
 
-import action from "../handlers/action";
-import handleError from "../handlers/error";
-import { NotFoundError } from "../http-error";
-import { SignInSchema, SignUpSchema } from "../validation";
+import action from '../handlers/action';
+import handleError from '../handlers/error';
+import { NotFoundError } from '../http-error';
+import { SignInSchema, SignUpSchema } from '../validation';
 
 export async function signUpWithCredentials(
   params: AuthCredentials
@@ -30,13 +30,13 @@ export async function signUpWithCredentials(
     const existingUser = await User.findOne({ email }).session(session);
 
     if (existingUser) {
-      throw new Error("User already exists");
+      throw new Error('User already exists');
     }
 
     const existingUsername = await User.findOne({ username }).session(session);
 
     if (existingUsername) {
-      throw new Error("Username already exists");
+      throw new Error('Username already exists');
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -50,7 +50,7 @@ export async function signUpWithCredentials(
         {
           userId: newUser._id,
           name,
-          provider: "credentials",
+          provider: 'credentials',
           providerAccountId: email,
           password: hashedPassword,
         },
@@ -60,7 +60,7 @@ export async function signUpWithCredentials(
 
     await session.commitTransaction();
 
-    await signIn("credentials", { email, password, redirect: false });
+    await signIn('credentials', { email, password, redirect: false });
 
     return { success: true };
   } catch (error) {
@@ -73,7 +73,7 @@ export async function signUpWithCredentials(
 }
 
 export async function signInWithCredentials(
-  params: Pick<AuthCredentials, "email" | "password">
+  params: Pick<AuthCredentials, 'email' | 'password'>
 ): Promise<ActionResponse> {
   const validationResult = await action({ params, schema: SignInSchema });
 
@@ -86,23 +86,23 @@ export async function signInWithCredentials(
   try {
     const existingUser = await User.findOne({ email });
 
-    if (!existingUser) throw new NotFoundError("User");
+    if (!existingUser) throw new NotFoundError('User');
 
     const existingAccount = await Account.findOne({
-      provider: "credentials",
+      provider: 'credentials',
       providerAccountId: email,
     });
 
-    if (!existingAccount) throw new NotFoundError("Account");
+    if (!existingAccount) throw new NotFoundError('Account');
 
     const passwordMatch = await bcrypt.compare(
       password,
       existingAccount.password
     );
 
-    if (!passwordMatch) throw new Error("Password does not match");
+    if (!passwordMatch) throw new Error('Password does not match');
 
-    await signIn("credentials", { email, password, redirect: false });
+    await signIn('credentials', { email, password, redirect: false });
 
     return { success: true };
   } catch (error) {
