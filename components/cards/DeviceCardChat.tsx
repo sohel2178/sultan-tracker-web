@@ -1,28 +1,21 @@
-"use client";
-import { BsFillFuelPumpFill } from "react-icons/bs";
-import {
-  FaCar,
-  FaMotorcycle,
-  FaTruck,
-  FaShip,
-  FaBus,
-  FaTractor,
-} from "react-icons/fa";
-import { IoMdSpeedometer, IoMdClose } from "react-icons/io";
-import { MdDirectionsBike, MdOutlineAssignmentTurnedIn } from "react-icons/md";
+'use client';
+import { BsFillFuelPumpFill } from 'react-icons/bs';
+import { FaCar, FaTruck, FaShip, FaBus, FaTractor } from 'react-icons/fa';
+import { IoMdSpeedometer, IoMdClose } from 'react-icons/io';
+import { MdDirectionsBike, MdOutlineAssignmentTurnedIn } from 'react-icons/md';
 
-import DeviceActionDropdown from "../dropdown/DeviceActionDropdown";
-import { Button } from "../ui/button";
+import DeviceActionDropdown from '../dropdown/DeviceActionDropdown';
+import { Button } from '../ui/button';
 
 interface DeviceCardProps {
   device: Device;
 }
 
-const getVehicleIcon = (vehicleType: Device["vehicleType"]) => {
+const getVehicleIcon = (vehicleType: Device['vehicleType']) => {
   const icons = {
     Car: <FaCar className="text-2xl text-blue-500" />,
     Bike: <MdDirectionsBike className="text-2xl text-green-500" />,
-    "Micro-Bus": <FaBus className="text-2xl text-orange-500" />,
+    'Micro-Bus': <FaBus className="text-2xl text-orange-500" />,
     Bus: <FaBus className="text-2xl text-yellow-500" />,
     Truck: <FaTruck className="text-2xl text-red-500" />,
     CNG: <BsFillFuelPumpFill className="text-2xl text-green-700" />,
@@ -56,8 +49,8 @@ const DeviceCardChat: React.FC<DeviceCardProps> = ({ device }) => {
       </div>
 
       <div className="mt-1 flex justify-between text-sm text-gray-500 dark:text-gray-400">
-        <p>{device.deviceModel.name || "No Model"}</p>
-        <p>{device.user ? device.user.email : "No User"}</p>
+        <p>{device.deviceModel.name || 'No Model'}</p>
+        <p>{device.user ? device.user.email : 'No User'}</p>
       </div>
 
       {/* <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -76,19 +69,19 @@ const DeviceCardChat: React.FC<DeviceCardProps> = ({ device }) => {
 
         <div className="flex justify-between text-sm">
           <p className="font-bold">Center Number</p>
-          <p>{device.centerNumber ? device.centerNumber : "No Number"}</p>
+          <p>{device.centerNumber ? device.centerNumber : 'No Number'}</p>
         </div>
 
         <div className="flex justify-between text-sm">
           <p className="font-bold">Reference</p>
           <p>
-            {device?.reference.name ? device?.reference.name : "No Reference"}
+            {device?.reference.name ? device?.reference.name : 'No Reference'}
           </p>
         </div>
 
         <div className="flex justify-between text-sm">
           <p className="font-bold">Service Charge</p>
-          <p>{device.serviceCharge || "Not Define"}</p>
+          <p>{device.serviceCharge || 'Not Define'}</p>
         </div>
       </div>
 
