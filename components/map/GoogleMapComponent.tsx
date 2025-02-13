@@ -1,7 +1,7 @@
 'use client';
 
 import { GoogleMap, TrafficLayer, useLoadScript } from '@react-google-maps/api';
-import React, { useState } from 'react';
+import React from 'react';
 
 import LocationMarker from './LocationMarker';
 
@@ -19,7 +19,7 @@ function GoogleMapComponent({ device }: Props) {
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
   });
 
-  const [currentDevice, setCurrentDevice] = useState(device);
+  // const [currentDevice, setCurrentDevice] = useState(device);
   // const [carPosition, setCarPosition] = useState({
   //   lat: device.geo.lat,
   //   lng: device.geo.lng,
@@ -48,10 +48,10 @@ function GoogleMapComponent({ device }: Props) {
   return (
     <GoogleMap
       mapContainerStyle={mapContainerStyle}
-      center={{ lat: currentDevice.geo.lat, lng: currentDevice.geo.lng }}
+      center={{ lat: device.geo.lat, lng: device.geo.lng }}
       zoom={14}
     >
-      <LocationMarker device={currentDevice} />
+      <LocationMarker device={device} />
 
       <TrafficLayer />
     </GoogleMap>

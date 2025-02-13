@@ -17,7 +17,7 @@ interface Props {
   device: RedisDevice;
 }
 
-function SlideUp({ title, geo, device }: Props) {
+function VehicleInfo({ title, geo, device }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [address, setAddress] = useState('');
 
@@ -93,6 +93,10 @@ function SlideUp({ title, geo, device }: Props) {
       <div className="flex flex-1">
         <div className="flex w-full flex-col p-4 space-y-1 subtle-regular">
           <div className="flex justify-between items-center">
+            <p className="uppercase">id</p>
+            <p className="uppercase">{device.id}</p>
+          </div>
+          <div className="flex justify-between items-center">
             <p className="uppercase">registration number</p>
             <p className="uppercase">{device.registrationNumber}</p>
           </div>
@@ -156,4 +160,4 @@ function SlideUp({ title, geo, device }: Props) {
   );
 }
 
-export default SlideUp;
+export default VehicleInfo;

@@ -10,7 +10,7 @@ async function LiveTracking() {
 
   if (!success || !device?.geo) return redirect(ROUTES.DEVICES);
 
-  console.log(device);
+  // console.log(device);
   return (
     <div className="h-[calc(100vh-5rem)] w-full">
       <GoogleMapComponent device={device} />

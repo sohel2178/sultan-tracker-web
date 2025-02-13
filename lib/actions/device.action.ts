@@ -10,6 +10,7 @@ import action from '../handlers/action';
 import handleError from '../handlers/error';
 import { NotFoundError } from '../http-error';
 import redisConnect from '../redis';
+import devices from '@/constants/devices';
 import {
   AssignDeviceSchema,
   CreateDeviceSchema,
@@ -426,4 +427,8 @@ export async function GetRedisDevice(
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
+}
+
+export async function GetTestDevice(): Promise<ActionResponse<Device[]>> {
+  return { success: true, data: devices };
 }
