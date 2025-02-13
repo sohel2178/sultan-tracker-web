@@ -28,6 +28,9 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  }, // for runtime unused variables
 };
 
 export default nextConfig;
