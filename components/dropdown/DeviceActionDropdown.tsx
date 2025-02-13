@@ -6,25 +6,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
   DropdownMenuGroup,
-  DropdownMenuPortal,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 
-import Image from "next/image";
-import Link from "next/link";
+import Link from 'next/link';
 
-import React from "react";
+import React from 'react';
 // import { CiMenuKebab } from "react-icons/ci";
-import { RiMenu4Line } from "react-icons/ri";
+import { RiMenu4Line } from 'react-icons/ri';
 
-import ROUTES from "@/constants/route";
-import { UnAssignUserFromDevice } from "@/lib/actions/device.action";
+import ROUTES from '@/constants/route';
+import { UnAssignUserFromDevice } from '@/lib/actions/device.action';
 
-import UnAssignDialog from "../dialog/UnAssignDialog";
-import { Button } from "../ui/button";
-import { DropdownMenuShortcut } from "../ui/dropdown-menu";
+import UnAssignDialog from '../dialog/UnAssignDialog';
+import { Button } from '../ui/button';
 
 function DeviceActionDropdown({ id }: { id: string }) {
   return (

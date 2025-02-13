@@ -16,57 +16,57 @@ function LocationMarker({ device }: { device: RedisDevice }) {
 
   const myRef = useRef<Geo>(null);
 
-  const update = (nn: Geo) => {
-    setGeo(nn);
-  };
-
-  const animate = (newGeo: Geo): void => {
-    const oldGeo: Geo = myRef.current ? { ...myRef.current } : { ...geo };
-
-    let step = 20;
-    const deltaLat = (newGeo.lat - oldGeo.lat) / step;
-    const deltaLng = (newGeo.lng - oldGeo.lng) / step;
-
-    const rotation = getGreatCircleBearing(
-      { latitude: oldGeo.lat, longitude: oldGeo.lng },
-      { latitude: newGeo.lat, longitude: newGeo.lng }
-    );
-
-    setRotation(rotation);
-
-    const anim = () => {
-      if (step > 0) {
-        update({
-          lat: oldGeo.lat + (21 - step) * deltaLat,
-          lng: oldGeo.lng + (21 - step) * deltaLng,
-        });
-
-        requestAnimationFrame(anim);
-        step--;
-      } else {
-        myRef.current = { ...newGeo };
-
-        setGeo((old) => ({
-          ...old,
-          acc: newGeo.acc,
-          update_time: newGeo.update_time,
-          speed: newGeo.speed,
-          fuel_line: newGeo.fuel_line,
-          charging: newGeo.charging,
-          pto_io_status: newGeo.pto_io_status,
-          over_speed: newGeo.over_speed,
-          temperature: newGeo.temperature,
-          number_of_satellite: newGeo.number_of_satellite,
-          voltage_level: newGeo.voltage_level,
-        }));
-      }
-    };
-
-    requestAnimationFrame(anim);
-  };
-
   useEffect(() => {
     // const ref = firebase.singleDeviceRef(device.id);
+
+    const update = (nn: Geo) => {
+      setGeo(nn);
+    };
+
+    const animate = (newGeo: Geo): void => {
+      const oldGeo: Geo = myRef.current ? { ...myRef.current } : { ...geo };
+
+      let step = 20;
+      const deltaLat = (newGeo.lat - oldGeo.lat) / step;
+      const deltaLng = (newGeo.lng - oldGeo.lng) / step;
+
+      const rotation = getGreatCircleBearing(
+        { latitude: oldGeo.lat, longitude: oldGeo.lng },
+        { latitude: newGeo.lat, longitude: newGeo.lng }
+      );
+
+      setRotation(rotation);
+
+      const anim = () => {
+        if (step > 0) {
+          update({
+            lat: oldGeo.lat + (21 - step) * deltaLat,
+            lng: oldGeo.lng + (21 - step) * deltaLng,
+          });
+
+          requestAnimationFrame(anim);
+          step--;
+        } else {
+          myRef.current = { ...newGeo };
+
+          setGeo((old) => ({
+            ...old,
+            acc: newGeo.acc,
+            update_time: newGeo.update_time,
+            speed: newGeo.speed,
+            fuel_line: newGeo.fuel_line,
+            charging: newGeo.charging,
+            pto_io_status: newGeo.pto_io_status,
+            over_speed: newGeo.over_speed,
+            temperature: newGeo.temperature,
+            number_of_satellite: newGeo.number_of_satellite,
+            voltage_level: newGeo.voltage_level,
+          }));
+        }
+      };
+
+      requestAnimationFrame(anim);
+    };
     const deviceRef = ref(database, `devices/${device.id}`);
 
     const unsubs = onChildChanged(deviceRef, (snapshot) => {
@@ -76,7 +76,7 @@ function LocationMarker({ device }: { device: RedisDevice }) {
     });
 
     return () => unsubs();
-  }, []);
+  }, [device.id, geo]);
   return (
     <div>
       <Marker
