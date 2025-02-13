@@ -141,3 +141,23 @@ export const getStopDuration = (geo: Geo): string => {
 
   return t ? stop_duration(t) : 'undefined';
 };
+
+export const hashPassword = async (password: string) => {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Buffer.from(hashBuffer).toString('hex');
+};
+
+export const verifyPassword = async (
+  enteredPassword: string,
+  hashedPassword: string
+) => {
+  const hashedEnteredPassword = await hashPassword(enteredPassword);
+  return hashedEnteredPassword === hashedPassword;
+};
+
+// async function verifyPassword(enteredPassword: string, hashedPassword: string) {
+//   const hashedEnteredPassword = await hashPassword(enteredPassword);
+//   return hashedEnteredPassword === hashedPassword;
+// }

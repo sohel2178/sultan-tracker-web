@@ -1,9 +1,4 @@
-'use server';
-
-export const config = {
-  runtime: 'nodejs',
-};
-import bcrypt from 'bcryptjs';
+// import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import Github from 'next-auth/providers/github';
@@ -13,6 +8,7 @@ import { IAccountDoc } from './database/account.model';
 import { IUserDoc } from './database/user.model';
 import { api } from './lib/api';
 import { SignInSchema } from './lib/validation';
+import { verifyPassword } from './lib/utils';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -38,7 +34,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           if (!existingUser) return null;
 
-          const isValidPassword = await bcrypt.compare(
+          const isValidPassword = await verifyPassword(
             password,
             existingAccount.password!
           );

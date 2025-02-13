@@ -1,10 +1,10 @@
 'use server';
 
-export const config = {
-  runtime: 'nodejs',
-};
+// export const config = {
+//   runtime: 'nodejs',
+// };
 
-import bcrypt from 'bcryptjs';
+// import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 
 import { signIn } from '@/auth';
@@ -15,6 +15,7 @@ import action from '../handlers/action';
 import handleError from '../handlers/error';
 import { NotFoundError } from '../http-error';
 import { SignInSchema, SignUpSchema } from '../validation';
+import { hashPassword, verifyPassword } from '../utils';
 
 export async function signUpWithCredentials(
   params: AuthCredentials
@@ -43,7 +44,7 @@ export async function signUpWithCredentials(
       throw new Error('Username already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await hashPassword(password);
 
     const [newUser] = await User.create([{ username, name, email }], {
       session,
@@ -99,7 +100,7 @@ export async function signInWithCredentials(
 
     if (!existingAccount) throw new NotFoundError('Account');
 
-    const passwordMatch = await bcrypt.compare(
+    const passwordMatch = await verifyPassword(
       password,
       existingAccount.password
     );
