@@ -1,4 +1,6 @@
-export const runtime = 'nodejs';
+export const config = {
+  runtime: 'nodejs',
+};
 
 import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';

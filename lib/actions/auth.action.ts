@@ -1,6 +1,8 @@
 'use server';
 
-export const runtime = 'nodejs';
+export const config = {
+  runtime: 'nodejs',
+};
 
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
