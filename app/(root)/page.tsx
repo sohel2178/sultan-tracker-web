@@ -1,18 +1,18 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 // import { auth } from "@/auth";
 // import { Button } from "@/components/ui/button";
 // import ROUTES from "@/constants/route";
 
-import { auth } from "@/auth";
-import QuestionCard from "@/components/cards/QuestionCard";
-import DataRenderer from "@/components/DataRenderer";
-import HomeFilter from "@/components/filters/HomeFilter";
-import LocalSearch from "@/components/search/LocalSearch";
-import { Button } from "@/components/ui/button";
-import ROUTES from "@/constants/route";
-import { EMPTY_QUESTION } from "@/constants/states";
-import { GetQuestions } from "@/lib/actions/question.action";
+// import { auth } from "@/auth";
+import QuestionCard from '@/components/cards/QuestionCard';
+import DataRenderer from '@/components/DataRenderer';
+import HomeFilter from '@/components/filters/HomeFilter';
+import LocalSearch from '@/components/search/LocalSearch';
+import { Button } from '@/components/ui/button';
+import ROUTES from '@/constants/route';
+import { EMPTY_QUESTION } from '@/constants/states';
+import { GetQuestions } from '@/lib/actions/question.action';
 // import { api } from "@/lib/api";
 
 // const questions = [
@@ -76,8 +76,8 @@ const Home = async ({ searchParams }: SearchParams) => {
   const { success, data, error } = await GetQuestions({
     page: Number(page) || 1,
     pageSize: Number(pageSize) || 10,
-    query: query || "",
-    filter: filter || "",
+    query: query || '',
+    filter: filter || '',
   });
 
   const { questions } = data || {};
