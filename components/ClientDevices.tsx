@@ -1,30 +1,15 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ClientSearch from './search/ClientSearch';
 import DataRenderer from './DataRenderer';
-import { DEFAULT_EMPTY } from '@/constants/states';
+import { DEFAULT_CLIENT_DEVICE } from '@/constants/states';
 import ClientDeviceCard from './cards/ClientDeviceCard';
 import { useUser } from '@/context/UserProvider';
 
-// interface Props {
-//   devices: RedisDevice[];
-//   success: boolean;
-
-//   error:
-//     | { message: string; details?: Record<string, string[]> | undefined }
-//     | undefined;
-// }
-
 function ClientDevices() {
-  const { devices, getDevices, error, success } = useUser();
+  const { devices } = useUser();
   const [filterDevices, setFilterDevice] = useState(devices);
-
-  useEffect(() => {
-    if (devices.length === 0) {
-      getDevices();
-    }
-  }, []);
   return (
     <div className="w-full h-full p-4">
       <ClientSearch
@@ -37,12 +22,12 @@ function ClientDevices() {
 
       <section className="mt-6">
         <DataRenderer
-          success={success}
-          error={error}
+          success={true}
+          error={undefined}
           data={filterDevices}
-          empty={DEFAULT_EMPTY}
+          empty={DEFAULT_CLIENT_DEVICE}
           render={(devices) => (
-            <div className="mt-10 flex w-full flex-wrap gap-4 overflow-y-auto">
+            <div className="mt-10 grid w-full grid-cols-1 gap-4 overflow-y-auto md:grid-cols-2 xl:grid-cols-3">
               {devices.map((device) => (
                 <ClientDeviceCard device={device} key={device._id} />
               ))}

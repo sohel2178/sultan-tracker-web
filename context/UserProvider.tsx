@@ -1,59 +1,27 @@
 'use client';
 
-import { GetUserDevices } from '@/lib/actions/device.action';
-import { useSession } from 'next-auth/react';
 import React, { createContext, ReactNode, useContext, useState } from 'react';
 
 interface UserContextType {
   devices: RedisDevice[];
-  getDevices: () => Promise<void>;
-  success: boolean;
-
-  error?:
-    | { message: string; details?: Record<string, string[]> | undefined }
-    | undefined;
-}
-
-interface Props {
-  devices: RedisDevice[];
-  success: boolean;
-
-  error?:
-    | { message: string; details?: Record<string, string[]> | undefined }
-    | undefined;
+  setDevices: (devices: RedisDevice[]) => void;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(
   undefined
 );
 
-function UserProvider({ children }: { children: ReactNode }) {
-  const { data: session } = useSession();
-  const [state, setState] = useState<Props>({
-    devices: [],
-    success: false,
-    error: undefined,
-  });
-
-  const getDevices = async () => {
-    if (!session?.user?.id) return; // Ensure user is logged in
-    const { success, data, error } = await GetUserDevices({
-      _id: session.user.id,
-    });
-    if (success && data) {
-      setState((old) => ({ ...old, devices: data, success, error }));
-    }
-  };
+function UserProvider({
+  children,
+  initialDevices,
+}: {
+  children: ReactNode;
+  initialDevices: RedisDevice[];
+}) {
+  const [devices, setDevices] = useState<RedisDevice[]>(initialDevices);
 
   return (
-    <UserContext.Provider
-      value={{
-        devices: state.devices,
-        success: state.success,
-        error: state.error,
-        getDevices,
-      }}
-    >
+    <UserContext.Provider value={{ devices, setDevices }}>
       {children}
     </UserContext.Provider>
   );

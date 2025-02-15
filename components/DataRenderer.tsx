@@ -1,10 +1,10 @@
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
 
-import { DEFAULT_EMPTY, DEFAULT_ERROR } from "@/constants/states";
+import { DEFAULT_EMPTY, DEFAULT_ERROR } from '@/constants/states';
 
-import { Button } from "./ui/button";
+import { Button } from './ui/button';
 
 interface Props<T> {
   success: boolean;
@@ -87,9 +87,9 @@ function DataRenderer<T>({
     return (
       <StateSkeleton
         image={{
-          light: "/images/light-error.png",
-          dark: "/images/dark-error.png",
-          alt: "Error state illustration",
+          light: '/images/light-error.png',
+          dark: '/images/dark-error.png',
+          alt: 'Error state illustration',
         }}
         title={error?.message || DEFAULT_ERROR.title}
         message={
@@ -106,9 +106,9 @@ function DataRenderer<T>({
     return (
       <StateSkeleton
         image={{
-          light: "/images/light-illustration.png",
-          dark: "/images/dark-illustration.png",
-          alt: "Empty state illustration",
+          light: '/images/light-illustration.png',
+          dark: '/images/dark-illustration.png',
+          alt: 'Empty state illustration',
         }}
         title={empty.title}
         message={empty.message}

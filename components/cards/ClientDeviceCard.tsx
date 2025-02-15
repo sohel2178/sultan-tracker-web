@@ -31,7 +31,7 @@ const getVehicleIcon = (vehicle_type: Device['vehicle_type']) => {
 
 function ClientDeviceCard({ device }: DeviceCardProps) {
   return (
-    <div className="background-light900_dark200 light-border w-full max-w-sm rounded-lg border border-gray-200 bg-white p-5 shadow-md">
+    <div className="background-light900_dark200 light-border w-full  rounded-lg border border-gray-200 bg-white p-5 shadow-md">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           {device.registration_number}
