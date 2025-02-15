@@ -1,17 +1,17 @@
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
 
-import ROUTES from "@/constants/route";
-import { DeleteDevice } from "@/lib/actions/device.action";
+import ROUTES from '@/constants/route';
+import { DeleteDevice } from '@/lib/actions/device.action';
 
-import DeleteDialog from "../dialog/DeleteDialog";
+import DeleteDialog from '../dialog/DeleteDialog';
 
 interface Props {
   device: Device;
 }
 
-function DeviceCard({ device: { _id, id, deviceModel, reference } }: Props) {
+function DeviceCard({ device: { _id, id, device_model, reference } }: Props) {
   return (
     <div className="shadow-light100_darknone flex w-full sm:w-[300px] md:w-[350px]">
       <div className="background-light900_dark200 light-border flex w-full items-center justify-between rounded-2xl border px-8 py-10">
@@ -20,7 +20,7 @@ function DeviceCard({ device: { _id, id, deviceModel, reference } }: Props) {
             {id}
           </p>
           <p className="paragraph-semibold text-dark500_light700 mt-2 line-clamp-1 w-full">
-            {deviceModel.name}
+            {device_model.name}
           </p>
 
           <p className="small-regular text-dark500_light700 mt-3 line-clamp-2 w-full">

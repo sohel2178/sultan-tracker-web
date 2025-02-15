@@ -1,36 +1,36 @@
-import { model, models, Schema, Types } from "mongoose";
+import { model, models, Schema, Types } from 'mongoose';
 
 export interface IDevice {
   id: string;
-  deviceSimNumber: string;
-  registrationNumber: string;
+  device_sim_number: string;
+  registration_number: string;
 
-  vehicleType:
-    | "Car"
-    | "Bike"
-    | "Micro-Bus"
-    | "Bus"
-    | "Truck"
-    | "CNG"
-    | "Ship"
-    | "Tractor"
-    | "Others";
+  vehicle_type:
+    | 'Car'
+    | 'Bike'
+    | 'Micro-Bus'
+    | 'Bus'
+    | 'Truck'
+    | 'CNG'
+    | 'Ship'
+    | 'Tractor'
+    | 'Others';
 
   reference: Types.ObjectId;
 
-  vehicleModel?: string;
-  driverName?: string;
-  driverPhone?: string;
-  driverPhoto?: string;
+  vehicle_model?: string;
+  driver_name?: string;
+  driver_phone?: string;
+  driver_photo?: string;
   code?: string;
-  centerNumber?: string;
+  center_number?: string;
   mileage?: number;
-  congestionConsumption?: number;
-  serviceCharge?: number;
-  speedLimit?: number;
-  maxTemp?: number;
-  minTemp?: number;
-  deviceModel: Types.ObjectId;
+  congestion_consumption?: number;
+  service_charge?: number;
+  speed_limit?: number;
+  max_temp?: number;
+  min_temp?: number;
+  device_model: Types.ObjectId;
   user?: Types.ObjectId;
 }
 
@@ -39,46 +39,46 @@ export interface IDeviceDoc extends IDevice, Document {}
 const DeviceSchema = new Schema<IDevice>(
   {
     id: { type: String, required: true, unique: true },
-    deviceSimNumber: { type: String, required: true },
-    registrationNumber: { type: String, required: true },
-    vehicleModel: { type: String },
-    driverName: { type: String },
-    driverPhone: { type: String },
-    driverPhoto: { type: String },
-    code: { type: String, default: "" },
-    centerNumber: { type: String },
-    vehicleType: {
+    device_sim_number: { type: String, required: true },
+    registration_number: { type: String, required: true },
+    vehicle_model: { type: String },
+    driver_name: { type: String },
+    driver_phone: { type: String },
+    driver_photo: { type: String },
+    code: { type: String, default: '' },
+    center_number: { type: String },
+    vehicle_type: {
       type: String,
       enum: [
-        "Car",
-        "Bike",
-        "Micro-Bus",
-        "Bus",
-        "Truck",
-        "CNG",
-        "Ship",
-        "Tractor",
-        "Others",
+        'Car',
+        'Bike',
+        'Micro-Bus',
+        'Bus',
+        'Truck',
+        'CNG',
+        'Ship',
+        'Tractor',
+        'Others',
       ],
-      default: "Car",
+      default: 'Car',
     },
     mileage: { type: Number },
-    congestionConsumption: { type: Number, default: 2 },
-    serviceCharge: { type: Number, default: 300 },
-    speedLimit: { type: Number, default: 80 },
-    maxTemp: { type: Number, default: 40 },
-    minTemp: { type: Number, default: 20 },
-    deviceModel: { type: Schema.Types.ObjectId, ref: "Model", required: true },
+    congestion_consumption: { type: Number, default: 2 },
+    service_charge: { type: Number, default: 300 },
+    speed_limit: { type: Number, default: 80 },
+    max_temp: { type: Number, default: 40 },
+    min_temp: { type: Number, default: 20 },
+    device_model: { type: Schema.Types.ObjectId, ref: 'Model', required: true },
     reference: {
       type: Schema.Types.ObjectId,
-      ref: "Reference",
+      ref: 'Reference',
       required: true,
     },
-    user: { type: Schema.Types.ObjectId, ref: "User" },
+    user: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }
 );
 
-const Device = models?.Device || model<IDevice>("Device", DeviceSchema);
+const Device = models?.Device || model<IDevice>('Device', DeviceSchema);
 
 export default Device;

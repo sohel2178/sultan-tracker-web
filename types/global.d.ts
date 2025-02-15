@@ -73,15 +73,15 @@ interface Reference extends CreateReferenceParams {
 
 interface CreateDeviceParams {
   id: string;
-  deviceSimNumber: string;
-  registrationNumber: string;
-  vehicleModel?: string;
-  driverName?: string;
-  driverPhone?: string;
-  driverPhoto?: string;
+  device_sim_number: string;
+  registration_number: string;
+  vehicle_model?: string;
+  driver_name?: string;
+  driver_phone?: string;
+  driver_photo?: string;
   code?: string;
-  centerNumber?: string;
-  vehicleType:
+  center_number?: string;
+  vehicle_type:
     | 'Car'
     | 'Bike'
     | 'Micro-Bus'
@@ -92,12 +92,12 @@ interface CreateDeviceParams {
     | 'Tractor'
     | 'Others';
   mileage?: number;
-  congestionConsumption?: number;
-  serviceCharge?: number;
-  speedLimit?: number;
-  maxTemp?: number;
-  minTemp?: number;
-  deviceModel: string;
+  congestion_consumption?: number;
+  service_charge?: number;
+  speed_limit?: number;
+  max_temp?: number;
+  min_temp?: number;
+  device_model: string;
   reference: string;
   user?: string;
 }
@@ -105,7 +105,7 @@ interface CreateDeviceParams {
 interface Device extends CreateDeviceParams {
   _id: string;
   reference: Reference;
-  deviceModel: Model;
+  device_model: Model;
   user?: {
     _id: string;
     name: string;
@@ -134,6 +134,7 @@ interface Geo {
 }
 
 interface RedisDevice extends Device {
+  device_model: string;
   geo: Geo;
 }
 

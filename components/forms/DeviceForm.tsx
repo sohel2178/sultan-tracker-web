@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ReloadIcon } from "@radix-ui/react-icons";
-import { useRouter } from "next/navigation";
-import React, { useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import { useRouter } from 'next/navigation';
+import React, { useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import ROUTES from "@/constants/route";
-import { toast } from "@/hooks/use-toast";
-import { CreateDevice, EditDevice } from "@/lib/actions/device.action";
-import { CreateDeviceSchema } from "@/lib/validation";
+import ROUTES from '@/constants/route';
+import { toast } from '@/hooks/use-toast';
+import { CreateDevice, EditDevice } from '@/lib/actions/device.action';
+import { CreateDeviceSchema } from '@/lib/validation';
 
-import { Button } from "../ui/button";
+import { Button } from '../ui/button';
 import {
   Form,
   FormControl,
@@ -20,15 +20,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
+} from '../ui/form';
+import { Input } from '../ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from '../ui/select';
 
 interface Props {
   models: Model[] | undefined;
@@ -43,17 +43,17 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
   const form = useForm<z.infer<typeof CreateDeviceSchema>>({
     resolver: zodResolver(CreateDeviceSchema),
     defaultValues: {
-      id: device?.id || "",
-      deviceSimNumber: device?.deviceSimNumber || "",
-      registrationNumber: device?.registrationNumber || "",
-      vehicleModel: device?.vehicleModel || "",
-      vehicleType: device?.vehicleType || "Car",
+      id: device?.id || '',
+      device_sim_number: device?.device_sim_number || '',
+      registration_number: device?.registration_number || '',
+      vehicle_model: device?.vehicle_model || '',
+      vehicle_type: device?.vehicle_type || 'Car',
       mileage: device?.mileage || 0,
-      congestionConsumption: device?.congestionConsumption || 2,
-      serviceCharge: device?.serviceCharge || 300,
-      deviceModel: device?.deviceModel || "",
-      reference: device?.reference || "",
-      centerNumber: device?.centerNumber || "",
+      congestion_consumption: device?.congestion_consumption || 2,
+      service_charge: device?.service_charge || 300,
+      device_model: device?.device_model || '',
+      reference: device?.reference || '',
+      center_number: device?.center_number || '',
     },
   });
 
@@ -70,15 +70,15 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
         });
         if (result.success) {
           toast({
-            title: "Success",
-            description: "Device updated successfully",
+            title: 'Success',
+            description: 'Device updated successfully',
           });
           router.push(ROUTES.DEVICES);
         } else {
           toast({
             title: `Error ${result.status}`,
-            description: result.error?.message || "Something went wrong",
-            variant: "destructive",
+            description: result.error?.message || 'Something went wrong',
+            variant: 'destructive',
           });
         }
         return;
@@ -86,15 +86,15 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
       const result = await CreateDevice(data);
       if (result.success) {
         toast({
-          title: "Success",
-          description: "Device created successfully",
+          title: 'Success',
+          description: 'Device created successfully',
         });
         if (result.data) router.push(ROUTES.DEVICES);
       } else {
         toast({
           title: `Error ${result.status}`,
-          description: result.error?.message || "Something went wrong",
-          variant: "destructive",
+          description: result.error?.message || 'Something went wrong',
+          variant: 'destructive',
         });
       }
     });
@@ -125,7 +125,7 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
         {/* Device SIM Number */}
         <FormField
           control={form.control}
-          name="deviceSimNumber"
+          name="device_sim_number"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -142,7 +142,7 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
         {/* Registration Number */}
         <FormField
           control={form.control}
-          name="registrationNumber"
+          name="registration_number"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
@@ -159,7 +159,7 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
         {/* Vehicle Type (Dropdown) */}
         <FormField
           control={form.control}
-          name="vehicleType"
+          name="vehicle_type"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Vehicle Type</FormLabel>
@@ -169,15 +169,15 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
                 </SelectTrigger>
                 <SelectContent>
                   {[
-                    "Car",
-                    "Bike",
-                    "Micro-Bus",
-                    "Bus",
-                    "Truck",
-                    "CNG",
-                    "Ship",
-                    "Tractor",
-                    "Others",
+                    'Car',
+                    'Bike',
+                    'Micro-Bus',
+                    'Bus',
+                    'Truck',
+                    'CNG',
+                    'Ship',
+                    'Tractor',
+                    'Others',
                   ].map((type) => (
                     <SelectItem key={type} value={type}>
                       {type}
@@ -192,7 +192,7 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
 
         <FormField
           control={form.control}
-          name="deviceModel"
+          name="device_model"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Device Model</FormLabel>
@@ -242,7 +242,7 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
 
         <FormField
           control={form.control}
-          name="centerNumber"
+          name="center_number"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Center Number</FormLabel>
@@ -256,7 +256,7 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
 
         <FormField
           control={form.control}
-          name="vehicleModel"
+          name="vehicle_model"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Vehicle Model</FormLabel>
@@ -272,7 +272,7 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
 
         <FormField
           control={form.control}
-          name="serviceCharge"
+          name="service_charge"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Service Charge</FormLabel>
@@ -280,10 +280,10 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
                 <Input
                   type="number"
                   {...field}
-                  value={field.value ?? ""}
+                  value={field.value ?? ''}
                   onChange={(e) => {
                     const value = e.target.value;
-                    field.onChange(value === "" ? undefined : Number(value)); // ✅ Convert string to number
+                    field.onChange(value === '' ? undefined : Number(value)); // ✅ Convert string to number
                   }}
                 />
               </FormControl>
@@ -307,7 +307,7 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
 
         <FormField
           control={form.control}
-          name="congestionConsumption"
+          name="congestion_consumption"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Jam Consumption</FormLabel>
@@ -331,7 +331,7 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
                 <span>Submitting</span>
               </>
             ) : (
-              <>{isEdit ? "Edit Device" : "Create Device"}</>
+              <>{isEdit ? 'Edit Device' : 'Create Device'}</>
             )}
           </Button>
         </div>

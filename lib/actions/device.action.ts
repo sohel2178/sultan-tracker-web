@@ -35,32 +35,32 @@ export async function CreateDevice(
 
   const {
     id,
-    deviceSimNumber,
+    device_sim_number,
     reference,
-    registrationNumber,
-    deviceModel,
-    vehicleModel,
-    vehicleType,
-    centerNumber,
+    registration_number,
+    device_model,
+    vehicle_model,
+    vehicle_type,
+    center_number,
     mileage,
-    congestionConsumption,
-    serviceCharge,
+    congestion_consumption,
+    service_charge,
   } = validationResult.params!;
   //   const userId = validationResult?.session?.user?.id;
 
   try {
     const device = await Device.create({
       id,
-      deviceSimNumber,
-      registrationNumber,
-      deviceModel,
-      vehicleModel,
+      device_sim_number,
+      registration_number,
+      device_model,
+      vehicle_model,
       reference,
-      vehicleType,
-      centerNumber,
+      vehicle_type,
+      center_number,
       mileage,
-      congestionConsumption,
-      serviceCharge,
+      congestion_consumption,
+      service_charge,
     });
 
     if (!device) {
@@ -68,10 +68,10 @@ export async function CreateDevice(
     }
 
     const ref = await Reference.findById(reference);
-    const devModel = await Model.findById(deviceModel);
+    const devModel = await Model.findById(device_model);
 
     const dev = JSON.parse(JSON.stringify(device));
-    dev.deviceModel = devModel.name;
+    dev.device_model = devModel.name;
     dev.reference = ref.name;
 
     delete dev._id;
@@ -135,16 +135,16 @@ export async function EditDevice(
   const {
     _id,
     id,
-    deviceSimNumber,
+    device_sim_number,
     reference,
-    registrationNumber,
-    deviceModel,
-    vehicleModel,
-    vehicleType,
-    centerNumber,
+    registration_number,
+    device_model,
+    vehicle_model,
+    vehicle_type,
+    center_number,
     mileage,
-    congestionConsumption,
-    serviceCharge,
+    congestion_consumption,
+    service_charge,
   } = validationResult.params!;
   //   const userId = validationResult?.session?.user?.id;
 
@@ -157,37 +157,37 @@ export async function EditDevice(
 
     if (
       device.id !== id ||
-      device.deviceSimNumber !== deviceSimNumber ||
+      device.device_sim_number !== device_sim_number ||
       device.reference !== reference ||
-      device.registrationNumber !== registrationNumber ||
-      device.deviceModel !== deviceModel ||
-      device.vehicleModel !== vehicleModel ||
-      device.vehicleType !== vehicleType ||
-      device.centerNumber !== centerNumber ||
+      device.registration_number !== registration_number ||
+      device.device_model !== device_model ||
+      device.vehicle_model !== vehicle_model ||
+      device.vehicle_type !== vehicle_type ||
+      device.center_number !== center_number ||
       device.mileage !== mileage ||
-      device.congestionConsumption !== congestionConsumption ||
-      device.serviceCharge !== serviceCharge
+      device.congestion_consumption !== congestion_consumption ||
+      device.service_charge !== service_charge
     ) {
       device.id = id;
-      device.deviceSimNumber = deviceSimNumber;
+      device.device_sim_number = device_sim_number;
       device.reference = reference;
-      device.registrationNumber = registrationNumber;
-      device.deviceModel = deviceModel;
-      device.vehicleModel = vehicleModel;
-      device.vehicleType = vehicleType;
-      device.centerNumber = centerNumber;
+      device.registration_number = registration_number;
+      device.device_model = device_model;
+      device.vehicle_model = vehicle_model;
+      device.vehicle_model = vehicle_model;
+      device.center_number = center_number;
       device.mileage = mileage;
-      device.congestionConsumption = congestionConsumption;
-      device.serviceCharge = serviceCharge;
+      device.congestion_consumption = congestion_consumption;
+      device.service_charge = service_charge;
     }
 
     await device.save();
 
     const ref = await Reference.findById(reference);
-    const devModel = await Model.findById(deviceModel);
+    const devModel = await Model.findById(device_model);
 
     const dev = JSON.parse(JSON.stringify(device));
-    dev.deviceModel = devModel.name;
+    dev.device_model = devModel.name;
     dev.reference = ref.name;
 
     delete dev._id;
@@ -268,9 +268,9 @@ export async function GetDevices(params: PaginatedBaseParams): Promise<
   if (query) {
     filterQuery.$or = [
       { id: { $regex: new RegExp(query, 'i') } },
-      { deviceSimNumber: { $regex: new RegExp(query, 'i') } },
-      { centerNumber: { $regex: new RegExp(query, 'i') } },
-      { registrationNumber: { $regex: new RegExp(query, 'i') } },
+      { device_sim_number: { $regex: new RegExp(query, 'i') } },
+      { center_number: { $regex: new RegExp(query, 'i') } },
+      { registration_number: { $regex: new RegExp(query, 'i') } },
     ];
   }
 
@@ -282,7 +282,7 @@ export async function GetDevices(params: PaginatedBaseParams): Promise<
       .sort({ createdAt: -1 })
       .populate('user', 'name email')
       .populate('reference', 'name')
-      .populate('deviceModel', 'name')
+      .populate('device_model', 'name')
       .skip(skip)
       .limit(limit);
 
@@ -413,7 +413,7 @@ export async function GetRedisDevice(
 
     if (redDevStr) {
       dev = JSON.parse(redDevStr);
-      dev.registrationNumber = dev.registration_number;
+      // dev.registrationNumber = dev.registration_number;
     }
 
     // const firebaseRef = db.ref('devices').child(device.id);
@@ -431,4 +431,48 @@ export async function GetRedisDevice(
 
 export async function GetTestDevice(): Promise<ActionResponse<Device[]>> {
   return { success: true, data: devices };
+}
+
+export async function GetUserDevices(
+  params: GetBaseParams
+): Promise<ActionResponse<RedisDevice[]>> {
+  const validationResult = await action({
+    params,
+    schema: GetBaseSchema,
+    authorize: true,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { _id: userId } = validationResult.params!;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) throw new NotFoundError('User');
+
+    const devIds = [
+      '359015560323896',
+      '359015562361282',
+      '359015560963105',
+      '359015560937729',
+      '359015560365467',
+    ];
+
+    const redis = await redisConnect();
+
+    const results = await redis.mGet(devIds);
+
+    results.map((data) => (data ? JSON.parse(data) : null));
+
+    const devices = results.map((data) => (data ? JSON.parse(data) : null));
+
+    // const devices = await Device.find({ user: userId });
+
+    return { success: true, data: JSON.parse(JSON.stringify(devices)) };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
 }

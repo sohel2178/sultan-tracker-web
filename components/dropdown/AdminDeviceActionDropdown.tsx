@@ -1,3 +1,5 @@
+'use client';
+
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -20,7 +22,7 @@ import { UnAssignUserFromDevice } from '@/lib/actions/device.action';
 import UnAssignDialog from '../dialog/UnAssignDialog';
 import { Button } from '../ui/button';
 
-function DeviceActionDropdown({ id }: { id: string }) {
+function AdminDeviceActionDropdown({ id }: { id: string }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -82,4 +84,4 @@ function DeviceActionDropdown({ id }: { id: string }) {
   );
 }
 
-export default DeviceActionDropdown;
+export default AdminDeviceActionDropdown;

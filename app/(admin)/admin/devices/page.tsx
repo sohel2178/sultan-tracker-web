@@ -1,15 +1,15 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 // import DeviceCard from "@/components/cards/DeviceCard";
-import DeviceCardChat from "@/components/cards/DeviceCardChat";
-import DataRenderer from "@/components/DataRenderer";
-import Pagination from "@/components/Pagination";
-import LocalSearch from "@/components/search/LocalSearch";
-import { Button } from "@/components/ui/button";
+import AdminDeviceCard from '@/components/cards/AdminDeviceCard';
+import DataRenderer from '@/components/DataRenderer';
+import Pagination from '@/components/Pagination';
+import LocalSearch from '@/components/search/LocalSearch';
+import { Button } from '@/components/ui/button';
 // import devices from "@/constants/devices";
-import ROUTES from "@/constants/route";
-import { EMPTY_DEVICES } from "@/constants/states";
-import { GetDevices } from "@/lib/actions/device.action";
+import ROUTES from '@/constants/route';
+import { EMPTY_DEVICES } from '@/constants/states';
+import { GetDevices } from '@/lib/actions/device.action';
 
 async function Devices({ searchParams }: RouteParams) {
   const { page, pageSize, query } = await searchParams;
@@ -64,7 +64,7 @@ async function Devices({ searchParams }: RouteParams) {
             render={(devices) => (
               <div className="mt-10 flex w-full flex-wrap gap-4 overflow-y-auto">
                 {devices.map((device) => (
-                  <DeviceCardChat device={device} key={device._id} />
+                  <AdminDeviceCard device={device} key={device._id} />
                 ))}
               </div>
             )}

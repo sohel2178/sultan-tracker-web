@@ -19,6 +19,10 @@ function MapDeviceList() {
   const [devices, setDevices] = useState<Device[]>([]);
   const [filterDevice, setFilterDevices] = useState<Device[]>([]);
 
+  // if (status === 'loading') return <p>Loading...</p>;
+
+  // if (!session) return <p>User not logged in</p>;
+
   useEffect(() => {
     async function fetchData() {
       const { success, data } = await GetTestDevice(); // Call the Server Action
@@ -27,8 +31,6 @@ function MapDeviceList() {
         setDevices(data);
         setFilterDevices(data);
       }
-
-      // Load only 10 items for demo
     }
 
     fetchData();
@@ -56,7 +58,7 @@ function MapDeviceList() {
             //   style={style}
           >
             <p>{device.id}</p>
-            <p>{device.registrationNumber}</p>
+            <p>{device.registration_number}</p>
           </div>
         </div>
       </Link>
@@ -71,13 +73,13 @@ function MapDeviceList() {
       transition={{ type: 'spring', stiffness: 100, damping: 15 }}
       className="max-sm:hidden background-light900_dark200 text-dark500_light700 flex flex-col h-[50%] absolute left-0 bottom-0 md:w-1/2 lg:w-1/3 xl:w-1/4"
     >
-      <div className="flex justify-between items-center px-6 py-4 h-[20%]">
+      <div className="flex gap-2 items-center px-6 py-4 h-[20%]">
         <ClientSearch
           imgSrc="/icons/search.svg"
           data={devices}
           callback={setFilterDevices}
           placeholder="Search by Id or Reg"
-          fields={['id', 'registrationNumber']}
+          fields={['id', 'registration_number']}
         />
         <Button variant="outline" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? (
