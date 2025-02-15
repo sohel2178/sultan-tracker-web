@@ -459,7 +459,10 @@ export async function GetUserDevices(
       '359015560963105',
       '359015560937729',
       '359015560365467',
+      '359015562362827',
     ];
+
+    // const devIds = [];
 
     const redis = await redisConnect();
 

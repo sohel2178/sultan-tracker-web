@@ -6,7 +6,9 @@ import { BsFillFuelPumpFill } from 'react-icons/bs';
 import { FaCar, FaTruck, FaShip, FaBus, FaTractor } from 'react-icons/fa';
 import { MdDirectionsBike, MdAddCall } from 'react-icons/md';
 import { Button } from '../ui/button';
-import AdminDeviceActionDropdown from '../dropdown/AdminDeviceActionDropdown';
+import OffOn from '../OffOn';
+import { getStopDuration } from '@/lib/utils';
+import ClientDeviceActionDropdown from '../dropdown/ClientDeviceActionDropdown';
 
 interface DeviceCardProps {
   device: RedisDevice;
@@ -39,33 +41,89 @@ function ClientDeviceCard({ device }: DeviceCardProps) {
           {getVehicleIcon(device.vehicle_type)}
 
           <Button variant="outline" asChild>
-            <AdminDeviceActionDropdown id={device._id} />
+            <ClientDeviceActionDropdown id={device._id} />
           </Button>
         </div>
       </div>
 
-      <div className="mt-1 flex justify-between text-sm text-gray-500 dark:text-gray-400">
+      <div className="mt-1 flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
         <p>{device.device_model || 'No Model'}</p>
-        <div className="flex gap-4 items-center">
-          <p>{device.driver_name || 'No Driver'}</p>
-          <a href="tel:+8801409962090">
-            <Button variant="outline">
-              <MdAddCall className="text-xl" />
-            </Button>
-          </a>
-        </div>
+        {device.driver_name && device.driver_phone && (
+          <div className="flex gap-4 items-center">
+            <p>{device.driver_name || 'No Driver'}</p>
+            <a href={`tel:${device.driver_phone}`}>
+              <Button variant="outline">
+                <MdAddCall className="text-xl" />
+              </Button>
+            </a>
+          </div>
+        )}
       </div>
 
       {/* <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {device.deviceModel.name || "No Model"}
           </p> */}
 
-      <div className="mt-3 flex flex-col gap-1">
-        <div className="flex justify-between text-sm">
-          <p className="font-bold">Device ID</p>
-          <p>{device.id}</p>
+      <div className="mt-3 flex flex-col gap-1 subtle-regular">
+        <div className="flex justify-between">
+          <p className="text-dark500_light700 uppercase">Device ID</p>
+          <p className="text-dark500_light700">{device.id}</p>
+        </div>
+
+        <div className="flex justify-between">
+          <p className="text-dark500_light700 uppercase">Number of sattelite</p>
+          <p className="text-dark500_light700">
+            {device.geo.number_of_satellite}
+          </p>
+        </div>
+
+        <div className="flex justify-between">
+          <p className="text-dark500_light700 uppercase">Voltage Level</p>
+          <p className="text-dark500_light700">{device.geo.voltage_level}</p>
+        </div>
+
+        <div className="flex justify-between">
+          <p className="text-dark500_light700 uppercase">total distance</p>
+          <p className="text-dark500_light700">
+            {(device.geo.milage ? device.geo.milage / 1000 : 0).toFixed(1)} km
+          </p>
+        </div>
+
+        <div className="flex justify-between">
+          <p className="text-dark500_light700 uppercase">Milage</p>
+          <p className="text-dark500_light700">{device.mileage || 'Not Set'}</p>
+        </div>
+
+        <div className="flex justify-between">
+          <p className="text-dark500_light700 uppercase">Stop duration</p>
+          <p className="text-dark500_light700">{getStopDuration(device.geo)}</p>
         </div>
       </div>
+
+      {device.geo && (
+        <div className="flex justify-between items-center mt-4">
+          <div className="flex gap-4 items-center">
+            <span className="body-medium text-dark500_light700 uppercase">
+              acc
+            </span>
+            <OffOn state={device.geo.acc || 'OFF'} />
+          </div>
+
+          <div className="flex gap-4 items-center">
+            <span className="body-medium text-dark500_light700 uppercase">
+              charging
+            </span>
+            <OffOn state={device.geo.charging || 'OFF'} />
+          </div>
+
+          <div className="flex gap-4 items-center">
+            <span className="body-medium text-dark500_light700 uppercase">
+              relay
+            </span>
+            <OffOn state={device.geo.fuel_line || 'OFF'} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

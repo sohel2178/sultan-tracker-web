@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Input } from '../ui/input';
 
@@ -26,24 +26,29 @@ const ClientSearch = <T,>({
   const [search, setSearch] = useState('');
   //   const [state, setState] = useState([...data]);
 
-  useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      if (search === '') {
-        callback(data);
-      } else {
-        // data.filter(x=>)
-        callback(
-          data.filter((item) =>
-            fields.some((field) =>
-              String(item[field]).toLowerCase().includes(search.toLowerCase())
-            )
+  const stableCallback = useCallback(() => {
+    if (search === '') {
+      callback(data);
+    } else {
+      // data.filter(x=>)
+      callback(
+        data.filter((item) =>
+          fields.some((field) =>
+            String(item[field]).toLowerCase().includes(search.toLowerCase())
           )
-        );
-      }
+        )
+      );
+    }
+  }, [search]);
+
+  useEffect(() => {
+    // console.log('hello');
+    const delayDebounce = setTimeout(() => {
+      stableCallback();
     }, 1000);
 
     return () => clearTimeout(delayDebounce);
-  }, [search, callback, data, fields]);
+  }, [stableCallback]);
   return (
     <div
       className={`background-light800_darkgradient flex min-h-[56px] grow items-center gap-4 rounded-[10px] px-4 ${otherClasses}`}

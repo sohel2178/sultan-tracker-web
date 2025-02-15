@@ -1,22 +1,30 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ClientSearch from './search/ClientSearch';
 import DataRenderer from './DataRenderer';
 import { DEFAULT_EMPTY } from '@/constants/states';
 import ClientDeviceCard from './cards/ClientDeviceCard';
+import { useUser } from '@/context/UserProvider';
 
-interface Props {
-  devices: RedisDevice[];
-  success: boolean;
+// interface Props {
+//   devices: RedisDevice[];
+//   success: boolean;
 
-  error:
-    | { message: string; details?: Record<string, string[]> | undefined }
-    | undefined;
-}
+//   error:
+//     | { message: string; details?: Record<string, string[]> | undefined }
+//     | undefined;
+// }
 
-function ClientDevices({ devices, success, error }: Props) {
+function ClientDevices() {
+  const { devices, getDevices, error, success } = useUser();
   const [filterDevices, setFilterDevice] = useState(devices);
+
+  useEffect(() => {
+    if (devices.length === 0) {
+      getDevices();
+    }
+  }, []);
   return (
     <div className="w-full h-full p-4">
       <ClientSearch
