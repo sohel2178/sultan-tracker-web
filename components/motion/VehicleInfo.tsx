@@ -98,7 +98,7 @@ function VehicleInfo({ title, geo, device }: Props) {
           </div>
           <div className="flex justify-between items-center">
             <p className="uppercase">registration number</p>
-            <p className="uppercase">{device.registrationNumber}</p>
+            <p className="uppercase">{device.registration_number}</p>
           </div>
 
           <div className="flex justify-between items-center">
