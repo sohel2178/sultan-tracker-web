@@ -116,7 +116,7 @@ interface Device extends CreateDeviceParams {
 interface Geo {
   lat: number;
   lng: number;
-  speed: number;
+  speed?: number;
   acc?: 'OFF' | 'ON';
   milage?: number;
   fuel_line?: 'OFF' | 'ON';
