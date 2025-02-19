@@ -10,9 +10,10 @@ import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 
 import { DayPicker } from 'react-day-picker';
-import 'react-day-picker/dist/style.css';
+// import 'react-day-picker/dist/style.css';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { formUrlQueryMultiple } from '@/lib/url';
+import 'react-day-picker/style.css';
 
 function DailyReportDate({ initialDate }: { initialDate?: Date }) {
   const [date, setDate] = React.useState<Date | undefined>(
