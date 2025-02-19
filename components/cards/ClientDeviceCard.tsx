@@ -41,7 +41,7 @@ function ClientDeviceCard({ device }: DeviceCardProps) {
           {getVehicleIcon(device.vehicle_type)}
 
           <Button variant="outline" asChild>
-            <ClientDeviceActionDropdown id={device._id} />
+            <ClientDeviceActionDropdown id={device._id} deviceId={device.id} />
           </Button>
         </div>
       </div>
@@ -73,19 +73,23 @@ function ClientDeviceCard({ device }: DeviceCardProps) {
         <div className="flex justify-between">
           <p className="text-dark500_light700 uppercase">Number of sattelite</p>
           <p className="text-dark500_light700">
-            {device.geo.number_of_satellite}
+            {device.geo?.number_of_satellite || 0}
           </p>
         </div>
 
         <div className="flex justify-between">
           <p className="text-dark500_light700 uppercase">Voltage Level</p>
-          <p className="text-dark500_light700">{device.geo.voltage_level}</p>
+          <p className="text-dark500_light700">
+            {device.geo?.voltage_level || 'Not Found'}
+          </p>
         </div>
 
         <div className="flex justify-between">
           <p className="text-dark500_light700 uppercase">total distance</p>
           <p className="text-dark500_light700">
-            {(device.geo.milage ? device.geo.milage / 1000 : 0).toFixed(1)} km
+            {(device.geo?.milage ? device.geo.milage / 1000 : 0).toFixed(1) ||
+              0}{' '}
+            km
           </p>
         </div>
 
@@ -96,7 +100,9 @@ function ClientDeviceCard({ device }: DeviceCardProps) {
 
         <div className="flex justify-between">
           <p className="text-dark500_light700 uppercase">Stop duration</p>
-          <p className="text-dark500_light700">{getStopDuration(device.geo)}</p>
+          <p className="text-dark500_light700">
+            {device.geo ? getStopDuration(device.geo) : 'Undefined'}
+          </p>
         </div>
       </div>
 

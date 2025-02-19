@@ -1,4 +1,4 @@
-import qs from "query-string";
+import qs from 'query-string';
 
 interface UrlQueryParams {
   params: string;
@@ -10,6 +10,31 @@ interface UrlRemoveQueryParams {
   params: string;
   keysToRemove: string[];
 }
+
+interface KeyValuePair {
+  key: string;
+  value: string; // or any other type based on your requirement
+}
+
+interface UrlQueryMultipleParams {
+  params: string;
+  keyValueArray: KeyValuePair[];
+}
+
+export const formUrlQueryMultiple = ({
+  params,
+  keyValueArray,
+}: UrlQueryMultipleParams) => {
+  const queryString = qs.parse(params);
+
+  keyValueArray.forEach((x) => {
+    queryString[x.key] = x.value;
+  });
+
+  //   console.log(currentUrl);
+
+  return qs.stringifyUrl({ url: window.location.pathname, query: queryString });
+};
 
 export const formUrlQuery = ({ params, key, value }: UrlQueryParams) => {
   const queryString = qs.parse(params);

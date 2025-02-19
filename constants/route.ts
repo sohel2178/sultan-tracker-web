@@ -29,6 +29,7 @@ const ROUTES = {
   CLIENT_DEVICES: '/devices',
   CLIENT_EDIT_DEVICE: (id: string) => `/devices/${id}/edit`,
   CLIENT_LIVE_TRACKING: (id: string) => `/devices/${id}/live-tracking`,
+  CLIENT_DAILY_REPORT: (id: string) => `/devices/${id}/daily-report`,
 };
 
 export default ROUTES;

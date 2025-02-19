@@ -13,6 +13,7 @@ import redisConnect from '../redis';
 import devices from '@/constants/devices';
 import {
   AssignDeviceSchema,
+  ClientEditDeviceSchema,
   CreateDeviceSchema,
   DeleteDeviceSchema,
   EditDeviceSchema,
@@ -74,7 +75,7 @@ export async function CreateDevice(
     dev.device_model = devModel.name;
     dev.reference = ref.name;
 
-    delete dev._id;
+    // delete dev._id;
     delete dev.__v;
 
     // console.log(dev);
@@ -190,7 +191,87 @@ export async function EditDevice(
     dev.device_model = devModel.name;
     dev.reference = ref.name;
 
-    delete dev._id;
+    // delete dev._id;
+    delete dev.__v;
+
+    const redis = await redisConnect();
+    await redis.set(id, JSON.stringify(dev));
+
+    const firebaseRef = db.ref('devices').child(id);
+    await firebaseRef.update(dev);
+
+    return { success: true, data: JSON.parse(JSON.stringify(device)) };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function EditClientDevice(
+  params: EditClientDeviceParams
+): Promise<ActionResponse<RedisDevice>> {
+  const validationResult = await action({
+    params,
+    schema: ClientEditDeviceSchema,
+    authorize: true,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const {
+    _id,
+    id,
+    registration_number,
+    vehicle_model,
+    vehicle_type,
+    center_number,
+    mileage,
+    driver_name,
+    driver_phone,
+    driver_photo,
+  } = validationResult.params!;
+  //   const userId = validationResult?.session?.user?.id;
+
+  try {
+    const device = await Device.findById(_id);
+
+    if (!device) {
+      throw new NotFoundError('Device');
+    }
+
+    if (
+      device.id !== id ||
+      device.registration_number !== registration_number ||
+      device.vehicle_model !== vehicle_model ||
+      device.vehicle_type !== vehicle_type ||
+      device.center_number !== center_number ||
+      device.mileage !== mileage ||
+      device.driver_name !== driver_name ||
+      device.driver_phone !== driver_phone ||
+      device.driver_photo !== driver_photo
+    ) {
+      device.id = id;
+      device.registration_number = registration_number;
+      device.vehicle_model = vehicle_model;
+      device.vehicle_model = vehicle_model;
+      device.center_number = center_number;
+      device.mileage = mileage;
+      device.driver_name = driver_name;
+      device.driver_phone = driver_phone;
+      device.driver_photo = driver_photo;
+    }
+
+    await device.save();
+
+    const ref = await Reference.findById(device.reference);
+    const devModel = await Model.findById(device.device_model);
+
+    const dev = JSON.parse(JSON.stringify(device));
+    dev.device_model = devModel.name;
+    dev.reference = ref.name;
+
+    // delete dev._id;
     delete dev.__v;
 
     const redis = await redisConnect();
@@ -453,20 +534,24 @@ export async function GetUserDevices(
 
     if (!user) throw new NotFoundError('User');
 
-    const devIds = [
-      '359015560323896',
-      '359015562361282',
-      '359015560963105',
-      '359015560937729',
-      '359015560365467',
-      '359015562362827',
-    ];
+    const devicesIds = (await Device.find({ user: userId }).select('id')).map(
+      (x) => x.id
+    );
+
+    // const devIds = [
+    //   '359015560323896',
+    //   '359015562361282',
+    //   '359015560963105',
+    //   '359015560937729',
+    //   '359015560365467',
+    //   '359015562362827',
+    // ];
 
     // const devIds = [];
 
     const redis = await redisConnect();
 
-    const results = await redis.mGet(devIds);
+    const results = await redis.mGet(devicesIds);
 
     results.map((data) => (data ? JSON.parse(data) : null));
 

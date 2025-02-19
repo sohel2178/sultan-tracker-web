@@ -116,7 +116,7 @@ interface Device extends CreateDeviceParams {
 interface Geo {
   lat: number;
   lng: number;
-  speed?: number;
+  speed: number;
   acc?: 'OFF' | 'ON';
   milage?: number;
   fuel_line?: 'OFF' | 'ON';
@@ -133,6 +133,47 @@ interface Geo {
   temperature?: number;
 }
 
+interface Trip {
+  status: 'ON' | 'OFF';
+  start: string;
+  end: string;
+  duration: number;
+  distance: number;
+}
+
+interface Hourly {
+  _id: number;
+  start: string;
+  end: string;
+  distance: number;
+}
+
+interface DailyReport {
+  trip_report?: Trip[];
+  hourly_report?: Hourly[];
+  actual_distance?: number;
+  total_distance?: number;
+  running_time?: number;
+}
+
+//   date: {
+//     year: { type: Number },
+//     month: { type: Number },
+//     day: { type: Number },
+//     hour: { type: Number },
+//     minute: { type: Number },
+//     second: { type: Number }
+//   }
+
+interface GeoDate {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  second: number;
+}
+
 interface RedisDevice extends Device {
   device_model: string;
   geo: Geo;
@@ -143,6 +184,11 @@ interface GetDeviceParams {
 }
 
 interface EditDeviceParams extends CreateDeviceParams {
+  _id: string;
+}
+
+interface EditClientDeviceParams
+  extends Omit<CreateDeviceParams, 'device_model' | 'reference'> {
   _id: string;
 }
 
@@ -217,6 +263,26 @@ interface PaginatedBaseParams {
   pageSize?: number;
   query?: string;
   sort?: string;
+}
+
+interface MonthlyReportParams {
+  id: string;
+  year: number;
+  month: number;
+}
+
+interface DailyReportParams extends MonthlyReportParams {
+  day: number;
+}
+
+interface RLocation {
+  geo: Geo;
+  date: GeoDate;
+}
+
+interface DLocation {
+  _id: number;
+  datas: RLocation[];
 }
 
 interface PaginatedSearchParams extends PaginatedBaseParams {

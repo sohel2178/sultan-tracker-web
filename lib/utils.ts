@@ -161,3 +161,28 @@ export const verifyPassword = async (
 //   const hashedEnteredPassword = await hashPassword(enteredPassword);
 //   return hashedEnteredPassword === hashedPassword;
 // }
+
+export const ampmFormat = (time: string): string => {
+  const array = time.split(':');
+  let hr = Number(array[0]);
+  const min = Number(array[1]);
+
+  const suffix = hr >= 12 ? 'PM' : 'AM';
+  hr = hr <= 12 ? hr : hr - 12;
+
+  return `${hr.toString().padStart(2, '0')}:${min
+    .toString()
+    .padStart(2, '0')} ${suffix}`;
+};
+
+export const getOrdinalSuffix = (n: number): string => {
+  if (n <= 0) return `${n}`; // Handle non-positive numbers gracefully
+
+  const suffixes = ['th', 'st', 'nd', 'rd'];
+  const remainder = n % 100;
+
+  const suffix =
+    remainder >= 11 && remainder <= 13 ? 'th' : suffixes[n % 10] || 'th';
+
+  return `${n}${suffix}`;
+};

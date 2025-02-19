@@ -298,6 +298,22 @@ export const EditDeviceSchema = CreateDeviceSchema.extend({
   _id: z.string().min(1, { message: 'ID is required.' }),
 });
 
+export const ClientEditDeviceSchema = CreateDeviceSchema.omit({
+  device_model: true,
+  reference: true,
+}).extend({
+  _id: z.string().min(1, { message: 'ID is required.' }),
+  driver_name: z.string().optional(),
+  driver_phone: z
+    .string()
+    .regex(
+      /^(?:\+8801[3-9]\d{8}|01[3-9]\d{8})$/,
+      'Invalid Bangladeshi mobile number'
+    )
+    .optional(),
+  driver_photo: z.string().optional(),
+});
+
 export const DeleteDeviceSchema = z.object({
   id: z.string().min(1, { message: 'ID is required.' }),
 });
@@ -305,4 +321,22 @@ export const DeleteDeviceSchema = z.object({
 export const AssignDeviceSchema = z.object({
   userId: z.string().min(1, { message: 'User ID is required.' }),
   deviceId: z.string().min(1, { message: 'Device ID is required.' }),
+});
+
+export const MonthlyReportSchema = z.object({
+  id: z.string().min(1, { message: 'Device is required.' }),
+  year: z
+    .number({ required_error: 'Year is required' }) // Required number
+    .min(2021, { message: 'Year must be greater than 2020' }), // Greater than 2020
+  month: z
+    .number({ required_error: 'Month is required' }) // Required number
+    .min(0, { message: 'Month must be at least 0' }) // Minimum value
+    .max(11, { message: 'Month must be at most 11' }), // Maximum value
+});
+
+export const DailyReportSchema = MonthlyReportSchema.extend({
+  day: z
+    .number({ required_error: 'Day is required' }) // Required number
+    .min(1, { message: 'Day must be at least 1' }) // Minimum value
+    .max(31, { message: 'Day must be at most 31' }), // Maximum value
 });

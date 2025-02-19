@@ -17,12 +17,15 @@ import React from 'react';
 import { RiMenu4Line } from 'react-icons/ri';
 
 import ROUTES from '@/constants/route';
-import { UnAssignUserFromDevice } from '@/lib/actions/device.action';
-
-import UnAssignDialog from '../dialog/UnAssignDialog';
 import { Button } from '../ui/button';
 
-function ClientDeviceActionDropdown({ id }: { id: string }) {
+function ClientDeviceActionDropdown({
+  id,
+  deviceId,
+}: {
+  id: string;
+  deviceId: string;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -47,7 +50,11 @@ function ClientDeviceActionDropdown({ id }: { id: string }) {
 
           <DropdownMenuItem className="cursor-pointer hover:scale-110">
             <Button variant="outline" className="w-full">
-              Daily Report
+              <Link
+                href={ROUTES.CLIENT_DAILY_REPORT(id) + '?deviceId=' + deviceId}
+              >
+                Daily Report
+              </Link>
             </Button>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer hover:scale-110">
@@ -60,23 +67,6 @@ function ClientDeviceActionDropdown({ id }: { id: string }) {
             <Button variant="outline" className="w-full">
               Speed Report
             </Button>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem className="cursor-pointer hover:scale-110" asChild>
-            <Button variant="outline">
-              <Link href={ROUTES.ASSIGN_DEVICE(id)}>Assign Device</Link>
-            </Button>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer hover:scale-110" asChild>
-            <UnAssignDialog
-              title="Are you absolutely Sure to unassign User??"
-              content="This action will unassign the device from the user. Click confirm to unassign device"
-              deviceId={id}
-              onUnAssign={UnAssignUserFromDevice}
-            />
-            {/* <Button variant="outline" className="w-full">
-            
-          </Button> */}
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
