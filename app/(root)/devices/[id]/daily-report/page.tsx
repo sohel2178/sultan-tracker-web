@@ -19,14 +19,14 @@ async function ClientDailyReport({ params, searchParams }: RouteParams) {
 
   const calDate = new Date(y, m, d);
 
-  const { data } = await GetDailyReport({
+  const { data, error } = await GetDailyReport({
     id: '359015560323896',
     year: y,
     month: m,
     day: d,
   });
 
-  console.log(data);
+  // console.log(data);
 
   return (
     <div className="flex w-full h-full flex-col relative">
@@ -57,17 +57,21 @@ async function ClientDailyReport({ params, searchParams }: RouteParams) {
       </div>
 
       <div className="w-full p-4 flex flex-col gap-8 ">
-        <div className="w-full flex flex-col gap-8 lg:flex-row lg:justify-between">
-          <div className="w-full">
-            {/* <TripReport/> */}
-            {data?.trip_report && <TripReport trips={data?.trip_report} />}
+        {data ? (
+          <div className="w-full flex flex-col gap-8 lg:flex-row lg:justify-between">
+            <div className="w-full">
+              {/* <TripReport/> */}
+              {data?.trip_report && <TripReport trips={data?.trip_report} />}
+            </div>
+            <div className="w-full">
+              {data?.hourly_report && (
+                <HourlyReport hourly={data.hourly_report} />
+              )}
+            </div>
           </div>
-          <div className="w-full">
-            {data?.hourly_report && (
-              <HourlyReport hourly={data.hourly_report} />
-            )}
-          </div>
-        </div>
+        ) : (
+          <div>{error && error.message}</div>
+        )}
       </div>
     </div>
   );
