@@ -78,7 +78,7 @@ const create_spans_from_datas = (all: RLocation[]) => {
 
   let onData = all.filter((x) => x.geo.acc === 'ON');
   if (onData.length < 2) {
-    onData = all.filter((x) => x.geo.speed >= 5);
+    onData = all.filter((x) => x.geo.speed && x.geo.speed >= 5);
   }
 
   for (let i = 0; i < onData.length; i++) {
