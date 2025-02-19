@@ -50,6 +50,8 @@ export async function GetDailyReport(
 
     const dailyReport: DailyReport = get_daily_report(locations, 1);
 
+    console.log(dailyReport);
+
     // console.log(locations[0].datas);
     //   const device = await Device.findById(_id);
 

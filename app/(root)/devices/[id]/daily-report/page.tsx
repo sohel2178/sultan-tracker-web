@@ -26,6 +26,8 @@ async function ClientDailyReport({ params, searchParams }: RouteParams) {
     day: d,
   });
 
+  console.log(data);
+
   return (
     <div className="flex w-full h-full flex-col relative">
       <div className="w-full flex flex-col sticky top-20 left-0 right-0 background-light900_dark200">
