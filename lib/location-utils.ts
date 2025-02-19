@@ -1,6 +1,6 @@
-'use server';
+// 'use server';
 
-import geolib from 'geolib';
+// import geolib from 'geolib';
 
 const DISTANCE_THRESHOLD = 10;
 const TRIP_TIME_THRESHOLD = 10 * 60;
@@ -14,15 +14,34 @@ const getTimeDiff = (currentDate: GeoDate, prevDate: GeoDate) => {
   );
 };
 
-const getDistanceFromLatLonInMeter = (start: RLocation, end: RLocation) => {
-  return geolib.getDistance(
-    { lat: start.geo.lat, lng: start.geo.lng },
-    { lat: end.geo.lat, lng: end.geo.lng }
-  );
+const deg2rad = (deg: number): number => {
+  return deg * (Math.PI / 180);
 };
 
+const getDistanceFromLatLonInMeter = (geo1: Geo, geo2: Geo) => {
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(geo2.lat - geo1.lat); // deg2rad below
+  const dLon = deg2rad(geo2.lng - geo1.lng);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(geo1.lat)) *
+      Math.cos(deg2rad(geo2.lat)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c * 1000; // Distance in km
+  return d;
+};
+
+// const getDistanceFromLatLonInMeter = (start: RLocation, end: RLocation) => {
+//   return geolib.getDistance(
+//     { lat: start.geo.lat, lng: start.geo.lng },
+//     { lat: end.geo.lat, lng: end.geo.lng }
+//   );
+// };
+
 const get_distance_from_two_locations = (loc1: RLocation, loc2: RLocation) => {
-  return getDistanceFromLatLonInMeter(loc1, loc2);
+  return getDistanceFromLatLonInMeter(loc1.geo, loc2.geo);
 };
 
 const get_distance_from_locations = (datas: RLocation[]) => {
@@ -204,10 +223,7 @@ const get_hourly_report = (data: DLocation[]): Hourly[] => {
     .filter((x) => x.distance >= 0.25);
 };
 
-export const get_daily_report = async (
-  datas: DLocation[],
-  vehicle_type: number
-) => {
+export const get_daily_report = (datas: DLocation[], vehicle_type: number) => {
   const all: RLocation[] = [];
   datas.forEach((x) => all.push(...x.datas));
 
