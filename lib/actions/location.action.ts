@@ -48,7 +48,7 @@ export async function GetDailyReport(
       { $sort: { _id: 1 } },
     ]).allowDiskUse(true);
 
-    const dailyReport: DailyReport = get_daily_report(locations, 1);
+    const dailyReport: DailyReport = await get_daily_report(locations, 1);
 
     // console.log(dailyReport);
 

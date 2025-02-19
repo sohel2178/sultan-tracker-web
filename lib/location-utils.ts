@@ -1,3 +1,5 @@
+'use server';
+
 import geolib from 'geolib';
 
 const DISTANCE_THRESHOLD = 10;
@@ -202,7 +204,10 @@ const get_hourly_report = (data: DLocation[]): Hourly[] => {
     .filter((x) => x.distance >= 0.25);
 };
 
-export const get_daily_report = (datas: DLocation[], vehicle_type: number) => {
+export const get_daily_report = async (
+  datas: DLocation[],
+  vehicle_type: number
+) => {
   const all: RLocation[] = [];
   datas.forEach((x) => all.push(...x.datas));
 
