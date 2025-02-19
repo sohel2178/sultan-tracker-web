@@ -1,6 +1,6 @@
 import AnimationControl from '@/components/motion/AnimationControl';
-import Gesture from '@/components/motion/Gesture';
-import MotionTest from '@/components/motion/MotionTest';
+// import Gesture from '@/components/motion/Gesture';
+// import MotionTest from '@/components/motion/MotionTest';
 import React from 'react';
 
 function FramerTest() {

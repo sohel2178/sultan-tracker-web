@@ -1,6 +1,5 @@
 'use server';
 
-import { LocationDoc } from '@/database/location.model';
 import action from '../handlers/action';
 import handleError from '../handlers/error';
 import { DailyReportSchema } from '../validation';
