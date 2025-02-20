@@ -1,6 +1,5 @@
 'use client';
 
-import { cn, findMinDuration } from '@/lib/utils';
 import React from 'react';
 
 import {
@@ -14,9 +13,6 @@ interface Props {
 }
 
 function TripLineReport({ trips }: Props) {
-  // const actual_trip = [...trips].filter((x) => x.duration > 0);
-  //   console.log(actual_trip);
-
   const modifiedTrip = [...trips];
 
   const total = trips.reduce((acc, trip) => acc + trip.duration, 0);
@@ -30,27 +26,8 @@ function TripLineReport({ trips }: Props) {
       distance: 0,
     });
   }
-
-  // console.log(total);
-
-  // const minDuration = findMinDuration(actual_trip) || 1;
-
-  // console.log(minDuration);
   const TripLine = ({ trip }: { trip: Trip }) => {
-    // console.log(((trip.duration * 100) / 86400).toFixed(0));
-    // return (
-    //   <div
-    //     className={cn(
-    //       `flex-[${Math.ceil(trip.duration / minDuration)}]  h-full`,
-    //       trip.status === 'OFF' ? 'bg-red-500' : 'bg-green-500'
-    //     )}
-    //   ></div>
-    // );
-
     const width = Math.ceil(trip.duration / 864) + '%';
-
-    // console.log(width);
-
     return (
       <Popover>
         <PopoverTrigger asChild>
