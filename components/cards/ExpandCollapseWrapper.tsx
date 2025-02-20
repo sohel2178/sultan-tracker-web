@@ -13,7 +13,7 @@ interface Props {
 function ExpandCollapseWrapper({ title, children }: Props) {
   const [visible, setSevible] = useState(false);
   return (
-    <MotionConfig transition={{ duration: 0.3, type: 'spring', damping: 10 }}>
+    <MotionConfig transition={{ duration: 0.3, type: 'spring', damping: 20 }}>
       <motion.div className="w-full" layout>
         <Card className="w-full p-0">
           <CardHeader>

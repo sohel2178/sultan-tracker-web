@@ -224,10 +224,16 @@ const get_hourly_report = (data: DLocation[]): Hourly[] => {
 };
 
 export const get_daily_report = (datas: DLocation[], vehicle_type: number) => {
-  const all: RLocation[] = [];
-  datas.forEach((x) => all.push(...x.datas));
+  // const all: RLocation[] = [];
+  // datas.forEach((x) => all.push(...x.datas));
 
-  const trip_report = trip_report_old(all, vehicle_type);
+  const all: RLocation[] = datas
+    .map((x) => x.datas)
+    .reduce((acc, curr) => acc.concat(curr), []);
+
+  const trip_report = trip_report_old(all, vehicle_type).filter(
+    (x) => x.duration > 0
+  );
 
   // console.log(trip_report);
 

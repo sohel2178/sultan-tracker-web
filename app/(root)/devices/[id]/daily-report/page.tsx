@@ -5,6 +5,8 @@ import React from 'react';
 import DailyReportDate from '@/components/popover/DailyReportDate';
 import TripReport from '@/components/motion/TripReport';
 import HourlyReport from '@/components/motion/HourlyReport';
+import TripLineReport from '@/components/motion/TripLineReport';
+import { formatDuration } from '@/lib/utils';
 
 async function ClientDailyReport({ params, searchParams }: RouteParams) {
   const date = new Date();
@@ -19,7 +21,7 @@ async function ClientDailyReport({ params, searchParams }: RouteParams) {
 
   const calDate = new Date(y, m, d);
 
-  const { data, error } = await GetDailyReport({
+  const { data } = await GetDailyReport({
     id: '359015560323896',
     year: y,
     month: m,
@@ -39,14 +41,17 @@ async function ClientDailyReport({ params, searchParams }: RouteParams) {
           />
 
           <DailyReportInfoCard
-            title="Total Distance"
-            value={data?.total_distance || 0}
-            unit="Km"
+            title="Running Time"
+            value={
+              data?.running_time
+                ? formatDuration(data.running_time)
+                : 'Not Found'
+            }
           />
 
           <DailyReportInfoCard
-            title="Total Distance"
-            value={data?.total_distance || 0}
+            title="Actual Distance"
+            value={data?.actual_distance || 0}
             unit="Km"
           />
         </div>
@@ -57,21 +62,18 @@ async function ClientDailyReport({ params, searchParams }: RouteParams) {
       </div>
 
       <div className="w-full p-4 flex flex-col gap-8 ">
-        {data ? (
-          <div className="w-full flex flex-col gap-8 lg:flex-row lg:justify-between">
-            <div className="w-full">
-              {/* <TripReport/> */}
-              {data?.trip_report && <TripReport trips={data?.trip_report} />}
-            </div>
-            <div className="w-full">
-              {data?.hourly_report && (
-                <HourlyReport hourly={data.hourly_report} />
-              )}
-            </div>
+        {data?.trip_report && <TripLineReport trips={data?.trip_report} />}
+        <div className="w-full flex flex-col gap-8 lg:flex-row lg:justify-between">
+          <div className="w-full">
+            {/* <TripReport/> */}
+            {data?.trip_report && <TripReport trips={data?.trip_report} />}
           </div>
-        ) : (
-          <div>{error && error.message}</div>
-        )}
+          <div className="w-full">
+            {data?.hourly_report && (
+              <HourlyReport hourly={data.hourly_report} />
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

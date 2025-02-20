@@ -186,3 +186,25 @@ export const getOrdinalSuffix = (n: number): string => {
 
   return `${n}${suffix}`;
 };
+
+export const findMinDuration = (data: Trip[]): number | null => {
+  if (data.length === 0) return null; // Handle empty array case
+
+  return data.reduce(
+    (min, current) => (current.duration < min.duration ? current : min),
+    data[0]
+  ).duration;
+};
+
+export const formatDuration = (time: number): string => {
+  const hr = Math.floor(time / 3600);
+  const rem = time % 3600;
+  const min = Math.floor(rem / 60);
+
+  return (
+    String(hr).padStart(2, '0') +
+    ' hrs ' +
+    String(min).padStart(2, '0') +
+    ' mins'
+  );
+};

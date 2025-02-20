@@ -2,7 +2,7 @@ import React from 'react';
 
 interface Props {
   title: string;
-  value: number;
+  value?: number | string;
   unit?: string;
 }
 
@@ -14,8 +14,8 @@ function DailyReportInfoCard({ title, value, unit }: Props) {
     >
       <span className="font-bold">{title}</span>
       <span>
-        <span className="font-bold text-orange-500">{value}</span>{' '}
-        <span>{unit}</span>
+        <span className="font-bold text-orange-500">{value}</span>
+        {unit && <span> {unit}</span>}
       </span>
     </div>
   );
