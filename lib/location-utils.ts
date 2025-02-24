@@ -4,6 +4,7 @@
 
 const DISTANCE_THRESHOLD = 10;
 const TRIP_TIME_THRESHOLD = 10 * 60;
+const CONGESTION_SPEED = 2;
 
 const getTimeDiff = (currentDate: GeoDate, prevDate: GeoDate) => {
   return (
@@ -75,6 +76,7 @@ const create_trip_items_from_on_locations = (datas: RLocation[]): Trip => {
     end: '',
     distance: 0,
     duration: 0,
+    congestion_time: 0,
   };
   l.start =
     datas[0].date.hour.toString().padStart(2, '0') +
@@ -89,6 +91,16 @@ const create_trip_items_from_on_locations = (datas: RLocation[]): Trip => {
   l.duration = getTimeDiff(datas[datas.length - 1].date, datas[0].date);
   l.distance = Number((get_distance_from_locations(datas) / 1000).toFixed(2));
 
+  const congestion_factor =
+    datas.filter(
+      (x) =>
+        x.geo.speed !== undefined &&
+        x.geo.acc === 'ON' &&
+        x.geo.speed < CONGESTION_SPEED
+    ).length / datas.length;
+
+  l.congestion_time = Math.floor(l.duration * congestion_factor);
+
   return l;
 };
 
@@ -99,7 +111,7 @@ const create_spans_from_datas = (all: RLocation[]) => {
 
   let onData = all.filter((x) => x.geo.acc === 'ON');
   if (onData.length < 2) {
-    onData = all.filter((x) => x.geo.speed && x.geo.speed >= 5);
+    onData = all.filter((x) => x.geo.speed !== undefined && x.geo.speed >= 5);
   }
 
   for (let i = 0; i < onData.length; i++) {
@@ -165,7 +177,7 @@ const create_off_span = (on_span: Trip[]): Trip[] => {
   return off_span;
 };
 
-const trip_report_old = (all: RLocation[], vehicle_type: number) => {
+const trip_report_old = (all: RLocation[], vehicle_type: string) => {
   const mySpans = create_spans_from_datas(all);
 
   // console.log(vehicle_type, 'Vehicle Type');
@@ -175,7 +187,9 @@ const trip_report_old = (all: RLocation[], vehicle_type: number) => {
   const on_span = mySpans
     .filter((x) => x.length > 1)
     .map((x) => create_trip_items_from_on_locations(x))
-    .filter((x) => (vehicle_type === 8 ? x.distance >= 0 : x.distance >= 0.5));
+    .filter((x) =>
+      vehicle_type === 'Tractor' ? x.distance >= 0 : x.distance >= 0.5
+    );
   const off_span = on_span.length > 0 ? create_off_span(on_span) : [];
 
   return off_span.flatMap((item, index) => [item, on_span[index]]);
@@ -223,7 +237,33 @@ const get_hourly_report = (data: DLocation[]): Hourly[] => {
     .filter((x) => x.distance >= 0.25);
 };
 
-export const get_daily_report = (datas: DLocation[], vehicle_type: number) => {
+const create_trip_items_from_daily_data = (datas: RLocation[]): MTrip => {
+  // const l: MTrip = { status: 'ON', duration: 0, distance: 0,congestion_factor:0, };
+  const duration = getTimeDiff(datas[datas.length - 1].date, datas[0].date);
+  const distance = Number(
+    (get_distance_from_locations(datas) / 1000).toFixed(2)
+  );
+  const congestion_factor =
+    datas.filter(
+      (x) =>
+        x.geo.speed !== undefined &&
+        x.geo.acc === 'ON' &&
+        x.geo.speed < CONGESTION_SPEED
+    ).length / datas.length;
+  const congestion_time = Math.floor(congestion_factor * duration);
+  const running_time = duration - congestion_time;
+
+  return {
+    status: 'ON',
+    duration,
+    distance,
+    congestion_factor,
+    congestion_time,
+    running_time,
+  };
+};
+
+export const get_daily_report = (datas: DLocation[], vehicle_type: string) => {
   // const all: RLocation[] = [];
   // datas.forEach((x) => all.push(...x.datas));
 
@@ -254,6 +294,10 @@ export const get_daily_report = (datas: DLocation[], vehicle_type: number) => {
     .map((x) => (x.status == 'ON' ? x.duration : 0))
     .reduce((partialSum, a) => partialSum + a, 0);
 
+  dailyReport.congestion_time = trip_report
+    .map((x) => (x.status == 'ON' && x.congestion_time ? x.congestion_time : 0))
+    .reduce((partialSum, a) => partialSum + a, 0);
+
   if (onLocations.length >= 10) {
     dailyReport.total_distance = Number(
       (get_distance_from_locations(onLocations) / 1000).toFixed(2)
@@ -265,4 +309,87 @@ export const get_daily_report = (datas: DLocation[], vehicle_type: number) => {
   }
 
   return dailyReport;
+};
+
+export const get_new_monthly_data_object = (
+  data: MonthlyData,
+  vehicle_type: string
+): MonthlyItem => {
+  const id = data._id;
+  const datas = data.datas;
+
+  const spans = create_spans_from_datas(datas);
+
+  const out = spans
+    .map((x) => create_trip_items_from_daily_data(x))
+    .filter((x) =>
+      vehicle_type === 'Tractor' ? x.distance >= 0 : x.distance >= 0.5
+    )
+    .reduce(
+      (acc, item) => {
+        acc.duration += item.duration;
+        acc.distance += item.distance;
+        acc.congestion_time += item.congestion_time;
+        acc.running_time += item.running_time;
+        return acc;
+      },
+      { duration: 0, distance: 0, congestion_time: 0, running_time: 0 }
+    );
+
+  const onLocations = datas.filter((x) => x.geo.acc === 'ON');
+
+  let actual_distance = 0;
+  let startDate = null;
+  let endDate = null;
+  let t1 = null;
+  let t2 = null;
+  const total_time = 24 * 3600;
+
+  if (onLocations.length >= 2) {
+    // console.log('YES');
+    actual_distance = get_distance_from_locations(onLocations);
+    startDate = onLocations[0].date;
+    endDate = onLocations[onLocations.length - 1].date;
+  } else {
+    // console.log('NO');
+    actual_distance = get_distance_from_locations(datas);
+  }
+
+  if (startDate && endDate) {
+    t1 = new Date(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+      startDate.hour,
+      startDate.minute,
+      startDate.second
+    );
+    t1.setHours(t1.getHours() - 6);
+
+    t2 = new Date(
+      endDate.year,
+      endDate.month,
+      endDate.day,
+      endDate.hour,
+      endDate.minute,
+      endDate.second
+    );
+    t2.setHours(t2.getHours() - 6);
+  }
+
+  return {
+    total_time: total_time,
+    running_time:
+      vehicle_type === 'Tractor'
+        ? out.running_time + out.congestion_time
+        : out.running_time,
+    congestion_time: vehicle_type === 'Tractor' ? 0 : out.congestion_time,
+    idle_time: total_time - (out.running_time + out.congestion_time),
+    start_time: t1,
+    end_time: t2,
+    duration: out.duration,
+    distance: actual_distance,
+    count: datas.length,
+    _id: id,
+  };
 };

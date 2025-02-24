@@ -41,7 +41,7 @@ function ClientDeviceCard({ device }: DeviceCardProps) {
           {getVehicleIcon(device.vehicle_type)}
 
           <Button variant="outline" asChild>
-            <ClientDeviceActionDropdown id={device._id} deviceId={device.id} />
+            <ClientDeviceActionDropdown id={device._id} />
           </Button>
         </div>
       </div>

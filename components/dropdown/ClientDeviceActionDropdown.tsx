@@ -19,13 +19,7 @@ import { RiMenu4Line } from 'react-icons/ri';
 import ROUTES from '@/constants/route';
 import { Button } from '../ui/button';
 
-function ClientDeviceActionDropdown({
-  id,
-  deviceId,
-}: {
-  id: string;
-  deviceId: string;
-}) {
+function ClientDeviceActionDropdown({ id }: { id: string }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -50,16 +44,14 @@ function ClientDeviceActionDropdown({
 
           <DropdownMenuItem className="cursor-pointer hover:scale-110">
             <Button variant="outline" className="w-full">
-              <Link
-                href={ROUTES.CLIENT_DAILY_REPORT(id) + '?deviceId=' + deviceId}
-              >
-                Daily Report
-              </Link>
+              <Link href={ROUTES.CLIENT_DAILY_REPORT(id)}>Daily Report</Link>
             </Button>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer hover:scale-110">
             <Button variant="outline" className="w-full">
-              Monthly Report
+              <Link href={ROUTES.CLIENT_MONTHLY_REPORT(id)}>
+                Monthly Report
+              </Link>
             </Button>
           </DropdownMenuItem>
 

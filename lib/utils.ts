@@ -208,3 +208,60 @@ export const formatDuration = (time: number): string => {
     ' mins'
   );
 };
+
+export const formatMonthlyDate = (date: Date): string => {
+  return new Date(date)
+    .toLocaleString('en-US', { month: 'short', year: 'numeric' })
+    .replace(' ', '-');
+};
+
+export const createMonthlyReportBody = (date: Date, device: RedisDevice) => {
+  return {
+    id: device.id,
+    vehicle_type: device.vehicle_type,
+    year: date.getFullYear(),
+    month: date.getMonth(),
+    day: date.getDate(),
+  };
+};
+
+export const formatTo12HourTime = (date: Date) => {
+  return date.toLocaleString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  });
+};
+
+export const getMonthlyDataInfo = (monthlydata: MonthlyItem[]) => {
+  const totalDistance = monthlydata.reduce((acc, x) => acc + x.distance, 0);
+  const totalRunningTime = monthlydata.reduce((acc, x) => acc + x.duration, 0);
+
+  const totalCongestionTime = monthlydata.reduce(
+    (acc, x) => acc + x.congestion_time,
+    0
+  );
+
+  return { totalDistance, totalRunningTime, totalCongestionTime };
+};
+
+export const getFuelConsumption = (
+  distanceInMeter: number,
+  mileage: number,
+  congestion_consumption?: number,
+  congestion_time?: number
+) => {
+  const distConsumtion = distanceInMeter / 1000 / mileage;
+
+  let congCons = 0;
+
+  if (congestion_time && congestion_consumption) {
+    congCons = (congestion_time * congestion_consumption) / 3600;
+  }
+
+  // console.log(distConsumtion);
+  // console.log(congCons);
+
+  return Number((congCons + distConsumtion).toFixed(2));
+};

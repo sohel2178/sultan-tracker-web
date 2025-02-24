@@ -139,6 +139,7 @@ interface Trip {
   end: string;
   duration: number;
   distance: number;
+  congestion_time?: number;
 }
 
 interface Hourly {
@@ -154,6 +155,7 @@ interface DailyReport {
   actual_distance?: number;
   total_distance?: number;
   running_time?: number;
+  congestion_time?: number;
 }
 
 //   date: {
@@ -269,6 +271,7 @@ interface MonthlyReportParams {
   id: string;
   year: number;
   month: number;
+  vehicle_type: string;
 }
 
 interface DailyReportParams extends MonthlyReportParams {
@@ -283,6 +286,45 @@ interface RLocation {
 interface DLocation {
   _id: number;
   datas: RLocation[];
+}
+
+interface MonthlyId {
+  day: number;
+  month: number;
+  year: number;
+}
+
+interface MonthlyData {
+  _id: MonthlyId;
+  count: number;
+  datas: RLocation[];
+}
+
+interface MonthlyItem {
+  _id: MonthlyId;
+  total_time: number;
+  running_time: number;
+  congestion_time: number;
+  idle_time: number;
+  duration: number;
+  distance: number;
+  count: number;
+  start_time: Date | null;
+  end_time: Date | null;
+}
+
+interface MTrip {
+  status: 'ON' | 'OFF';
+  duration: number;
+  distance: number;
+  congestion_factor: number;
+  congestion_time: number;
+  running_time: number;
+}
+
+interface PopDevice {
+  id: string;
+  registration_number: string;
 }
 
 interface PaginatedSearchParams extends PaginatedBaseParams {

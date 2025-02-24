@@ -63,7 +63,7 @@ const DeviceSchema = new Schema<IDevice>(
       default: 'Car',
     },
     mileage: { type: Number },
-    congestion_consumption: { type: Number, default: 2 },
+    congestion_consumption: { type: Number, default: 0.5 },
     service_charge: { type: Number, default: 300 },
     speed_limit: { type: Number, default: 80 },
     max_temp: { type: Number, default: 40 },

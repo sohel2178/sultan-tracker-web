@@ -49,7 +49,7 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
       vehicle_model: device?.vehicle_model || '',
       vehicle_type: device?.vehicle_type || 'Car',
       mileage: device?.mileage || 0,
-      congestion_consumption: device?.congestion_consumption || 2,
+      congestion_consumption: device?.congestion_consumption || 0.5,
       service_charge: device?.service_charge || 300,
       device_model: device?.device_model || '',
       reference: device?.reference || '',
@@ -298,7 +298,15 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
             <FormItem>
               <FormLabel>Mileage</FormLabel>
               <FormControl>
-                <Input type="number" {...field} />
+                <Input
+                  type="number"
+                  {...field}
+                  value={field.value ?? ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    field.onChange(value === '' ? undefined : Number(value)); // ✅ Convert string to number
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -312,7 +320,15 @@ function DeviceForm({ models, references, device, isEdit = false }: Props) {
             <FormItem>
               <FormLabel>Jam Consumption</FormLabel>
               <FormControl>
-                <Input type="number" {...field} />
+                <Input
+                  type="number"
+                  {...field}
+                  value={field.value ?? ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    field.onChange(value === '' ? undefined : Number(value)); // ✅ Convert string to number
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

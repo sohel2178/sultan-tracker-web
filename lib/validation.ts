@@ -325,6 +325,7 @@ export const AssignDeviceSchema = z.object({
 
 export const MonthlyReportSchema = z.object({
   id: z.string().min(1, { message: 'Device is required.' }),
+  vehicle_type: z.string().min(1, { message: 'Vehicle Type is required.' }),
   year: z
     .number({ required_error: 'Year is required' }) // Required number
     .min(2021, { message: 'Year must be greater than 2020' }), // Greater than 2020

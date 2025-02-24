@@ -10,7 +10,7 @@ import action from '../handlers/action';
 import handleError from '../handlers/error';
 import { NotFoundError } from '../http-error';
 import redisConnect from '../redis';
-import devices from '@/constants/devices';
+import { devices } from '@/constants/devices';
 import {
   AssignDeviceSchema,
   ClientEditDeviceSchema,
@@ -488,9 +488,10 @@ export async function GetRedisDevice(
   const { _id } = validationResult.params!;
 
   try {
+    const d = await Device.findById(_id);
     let dev = null;
     const redis = await redisConnect();
-    const redDevStr = await redis.get(_id);
+    const redDevStr = await redis.get(d.id);
 
     if (redDevStr) {
       dev = JSON.parse(redDevStr);
@@ -558,6 +559,38 @@ export async function GetUserDevices(
     const devices = results.map((data) => (data ? JSON.parse(data) : null));
 
     // const devices = await Device.find({ user: userId });
+
+    return { success: true, data: JSON.parse(JSON.stringify(devices)) };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function GetUserPopDevices(
+  params: GetBaseParams
+): Promise<ActionResponse<PopDevice[]>> {
+  const validationResult = await action({
+    params,
+    schema: GetBaseSchema,
+    authorize: true,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { _id: userId } = validationResult.params!;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) throw new NotFoundError('User');
+
+    const devices = await Device.find({ user: userId }).select(
+      'id registration_number'
+    );
+
+    console.log(devices);
 
     return { success: true, data: JSON.parse(JSON.stringify(devices)) };
   } catch (error) {

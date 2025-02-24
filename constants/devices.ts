@@ -40,6 +40,6 @@ const generateDevices = (count: number): Device[] => {
 };
 
 // Generate 50 devices
-const devices = generateDevices(50);
+export const devices = generateDevices(50);
 
-export default devices;
+// export default devices;

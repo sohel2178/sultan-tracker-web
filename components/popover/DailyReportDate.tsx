@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Popover,
   PopoverContent,
@@ -11,66 +11,37 @@ import { format } from 'date-fns';
 
 import { DayPicker } from 'react-day-picker';
 // import 'react-day-picker/dist/style.css';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { formUrlQueryMultiple } from '@/lib/url';
 import 'react-day-picker/style.css';
 
-function DailyReportDate({ initialDate }: { initialDate?: Date }) {
-  const [date, setDate] = React.useState<Date | undefined>(
-    initialDate || new Date()
-  );
+interface Props {
+  date: Date;
+  setDate: (date: Date) => void;
+}
 
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const handleDateSelect = (selecdateDate: Date | undefined) => {
-    if (!selecdateDate) return;
-
-    const year = selecdateDate.getFullYear();
-    const month = selecdateDate.getMonth();
-    const day = selecdateDate.getDate();
-
-    const newUrl = formUrlQueryMultiple({
-      params: searchParams.toString(),
-      keyValueArray: [
-        { key: 'year', value: year.toString() },
-        { key: 'month', value: month.toString() },
-        { key: 'day', value: day.toString() },
-      ],
-    });
-
-    router.push(newUrl, { scroll: false });
-
-    setDate(selecdateDate);
-  };
-
+function DailyReportDate({ date, setDate }: Props) {
+  const [open, setOpen] = useState(false);
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" onClick={() => setOpen((prev) => !prev)}>
           {date ? format(date, 'PPP') : 'Select Date'}
         </Button>
       </PopoverTrigger>
 
       <PopoverContent
-        className="w-auto p-0 background-light900_dark200 light-border"
+        className="w-auto p-4 background-light900_dark200 light-border"
         align="end"
       >
-        {/* <Calendar
+        <DayPicker
           mode="single"
-          selected={date} // Ensure selected date is passed correctly
+          selected={date}
           onSelect={(selectedDate) => {
             if (selectedDate) {
               setDate(selectedDate); // Update state with selected date
+              setOpen(false); // Close Popover
             }
           }}
-          initialFocus
-          className="rounded-md border"
-          today={date}
-          defaultMonth={date}
-        /> */}
-
-        <DayPicker mode="single" selected={date} onSelect={handleDateSelect} />
+        />
       </PopoverContent>
     </Popover>
   );
