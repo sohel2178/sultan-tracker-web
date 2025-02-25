@@ -4,85 +4,93 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { GetTestDevice } from '@/lib/actions/device.action';
+import {
+  GetAdminPopDevices,
+  GetUserPopDevices,
+} from '@/lib/actions/device.action';
 
-import { FixedSizeList as List } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import Link from 'next/link';
-import ROUTES from '@/constants/route';
-import { cn } from '@/lib/utils';
 import ClientSearch from '../search/ClientSearch';
+import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
+import DeviceRecyclerView from '../popover/DeviceRecyclerView';
 
-function MapDeviceList() {
-  const [isOpen, setIsOpen] = useState(false);
+interface Props {
+  device: PopDevice | RedisDevice;
+}
 
-  const [devices, setDevices] = useState<Device[]>([]);
-  const [filterDevice, setFilterDevices] = useState<Device[]>([]);
+const MapDeviceList = ({ device }: Props) => {
+  const { data: session } = useSession();
+  const pathname = usePathname();
 
-  // if (status === 'loading') return <p>Loading...</p>;
+  const [state, setState] = useState<{
+    isOpen: boolean;
+    devices: PopDevice[];
+    renderDevices: PopDevice[];
+  }>({
+    isOpen: false,
+    devices: [],
+    renderDevices: [],
+  });
 
-  // if (!session) return <p>User not logged in</p>;
+  const setRenderDevices = (devices: PopDevice[]) => {
+    if (devices.length > 0) {
+      setState((old) => ({
+        ...old, // Spread previous state to keep all properties
+        renderDevices: devices, // Ensure response.data is an array
+      }));
+    }
+  };
 
   useEffect(() => {
-    async function fetchData() {
-      const { success, data } = await GetTestDevice(); // Call the Server Action
+    const fetchDevices = async () => {
+      let data: PopDevice[] = [];
 
-      if (success && data) {
-        setDevices(data);
-        setFilterDevices(data);
+      if (session?.user.accountType === 'Admin' && pathname.includes('admin')) {
+        const response = await GetAdminPopDevices({ _id: session.user.id });
+        if (response.success && response.data) {
+          console.log(response.data, 'Hello ......Admin');
+          data = response.data;
+        }
+      } else if (session?.user) {
+        const response = await GetUserPopDevices({ _id: session.user.id });
+        if (response.success && response.data) {
+          console.log(response.data, 'Hello ......Client');
+          data = response.data;
+        }
       }
-    }
 
-    fetchData();
+      // Single state update
+      setState((old) => ({
+        ...old,
+        devices: data.length ? [...data] : old.devices,
+        renderDevices: data.length ? [...data] : old.renderDevices,
+      }));
+    };
+
+    fetchDevices();
   }, []);
-
-  const Row = ({
-    index,
-    style,
-  }: {
-    index: number;
-    style: React.CSSProperties;
-  }) => {
-    const device = filterDevice[index];
-
-    return (
-      <Link href={ROUTES.LIVE_TRACKING(device._id)} style={style}>
-        <div className="px-4 py-1">
-          <div
-            className={cn(
-              'flex flex-col justify-between bg-red-300 px-4 py-1 rounded-md',
-              index % 2 === 0
-                ? 'background-light700_dark400'
-                : 'background-light800_dark300'
-            )}
-            //   style={style}
-          >
-            <p>{device.id}</p>
-            <p>{device.registration_number}</p>
-          </div>
-        </div>
-      </Link>
-    );
-  };
 
   return (
     <motion.div
       initial={{ y: '80%' }} // Start off-screen
-      animate={{ y: isOpen ? 0 : '80%' }} // Slide up when open
+      animate={{ y: state.isOpen ? 0 : '80%' }} // Slide up when open
       exit={{ y: '80%' }} // Slide down when closed
       transition={{ type: 'spring', stiffness: 100, damping: 15 }}
-      className="max-sm:hidden background-light900_dark200 text-dark500_light700 flex flex-col h-[50%] absolute left-0 bottom-0 md:w-1/2 lg:w-1/3 xl:w-1/4"
+      className="max-sm:hidden background-light900_dark200 text-dark500_light700  flex flex-col h-[50%] absolute left-0 bottom-0 md:w-1/2 lg:w-1/3 xl:w-1/4"
     >
       <div className="flex gap-2 items-center px-6 py-4 h-[20%]">
         <ClientSearch
           imgSrc="/icons/search.svg"
-          data={devices}
-          callback={setFilterDevices}
+          data={state.devices}
+          callback={setRenderDevices}
           placeholder="Search by Id or Reg"
           fields={['id', 'registration_number']}
         />
-        <Button variant="outline" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? (
+        <Button
+          variant="outline"
+          onClick={() => setState((old) => ({ ...old, isOpen: !old.isOpen }))}
+        >
+          {state.isOpen ? (
             <FaChevronDown className="text-2xl" />
           ) : (
             <FaChevronUp className="text-2xl" />
@@ -96,23 +104,14 @@ function MapDeviceList() {
       ></div>
 
       <div className="flex flex-1">
-        {filterDevice.length > 0 && (
-          <AutoSizer>
-            {({ height, width }) => (
-              <List
-                height={height}
-                itemCount={filterDevice.length}
-                itemSize={60}
-                width={width}
-              >
-                {Row}
-              </List>
-            )}
-          </AutoSizer>
-        )}
+        <DeviceRecyclerView
+          items={state.renderDevices}
+          selectedDevice={device}
+          pathname={pathname}
+        />
       </div>
     </motion.div>
   );
-}
+};
 
 export default MapDeviceList;

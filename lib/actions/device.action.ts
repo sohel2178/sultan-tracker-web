@@ -3,7 +3,7 @@
 import { FilterQuery } from 'mongoose';
 import { revalidatePath } from 'next/cache';
 
-import { Device, Model, Reference, User } from '@/database';
+import { Account, Device, Model, Reference, User } from '@/database';
 
 import { db } from '../firebase';
 import action from '../handlers/action';
@@ -488,10 +488,19 @@ export async function GetRedisDevice(
   const { _id } = validationResult.params!;
 
   try {
-    const d = await Device.findById(_id);
+    // const d = await Device.findById(_id);
+    let redisId = '359015562295878';
     let dev = null;
     const redis = await redisConnect();
-    const redDevStr = await redis.get(d.id);
+
+    if (_id !== '359015562295878') {
+      const d = await Device.findById(_id);
+      redisId = d.id;
+    }
+
+    // console.log(redisId);
+
+    const redDevStr = await redis.get(redisId);
 
     if (redDevStr) {
       dev = JSON.parse(redDevStr);
@@ -590,7 +599,39 @@ export async function GetUserPopDevices(
       'id registration_number'
     );
 
-    console.log(devices);
+    // console.log(devices);
+
+    return { success: true, data: JSON.parse(JSON.stringify(devices)) };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export async function GetAdminPopDevices(
+  params: GetBaseParams
+): Promise<ActionResponse<PopDevice[]>> {
+  const validationResult = await action({
+    params,
+    schema: GetBaseSchema,
+    authorize: true,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { _id: userId } = validationResult.params!;
+
+  try {
+    const accunt = await Account.findOne({ userId });
+
+    if (!accunt) throw new NotFoundError('Account');
+    if (accunt.accountType !== 'Admin')
+      throw new NotFoundError('Admin Account');
+
+    const devices = await Device.find().select('id registration_number');
+
+    // console.log(devices);
 
     return { success: true, data: JSON.parse(JSON.stringify(devices)) };
   } catch (error) {

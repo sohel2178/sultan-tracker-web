@@ -323,6 +323,7 @@ interface MTrip {
 }
 
 interface PopDevice {
+  _id: string;
   id: string;
   registration_number: string;
 }

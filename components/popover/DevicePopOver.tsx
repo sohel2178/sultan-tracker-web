@@ -10,13 +10,16 @@ import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
 // import { devices as data } from '@/constants/devices';
 import ClientSearch from '../search/ClientSearch';
 import { cn } from '@/lib/utils';
-import { GetUserDevices } from '@/lib/actions/device.action';
+import {
+  GetAdminPopDevices,
+  GetUserPopDevices,
+} from '@/lib/actions/device.action';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 interface RecyclerViewProps {
-  items: RedisDevice[];
-  selectedDevice: RedisDevice;
+  items: RedisDevice[] | PopDevice[];
+  selectedDevice: RedisDevice | PopDevice;
 }
 
 interface DevicePopOverProps {
@@ -63,15 +66,28 @@ const RecyclerView: React.FC<RecyclerViewProps> = ({
 
 function DevicePopOver({ selectedDevice }: DevicePopOverProps) {
   const { data: session } = useSession();
+  const pathname = usePathname();
 
   //   const deviceData: PopDevice[] = [];
 
-  const [devices, setDevices] = useState<RedisDevice[]>([]);
-  const [filterDevices, setfilterDevices] = useState<RedisDevice[]>([]);
+  const [devices, setDevices] = useState<RedisDevice[] | PopDevice[]>([]);
+  const [filterDevices, setfilterDevices] = useState<
+    RedisDevice[] | PopDevice[]
+  >([]);
 
   useEffect(() => {
-    if (session?.user.accountType === 'User') {
-      GetUserDevices({ _id: session.user.id })
+    if (session?.user.accountType === 'Admin' && pathname.includes('admin')) {
+      GetAdminPopDevices({ _id: session.user.id })
+        .then((response) => {
+          if (response.success && response.data) {
+            // deviceData.push(...data);
+            setDevices(response.data);
+            setfilterDevices(response.data);
+          }
+        })
+        .catch((err) => console.log(err));
+    } else if (session?.user) {
+      GetUserPopDevices({ _id: session.user.id })
         .then((response) => {
           if (response.success && response.data) {
             // deviceData.push(...data);
@@ -83,7 +99,7 @@ function DevicePopOver({ selectedDevice }: DevicePopOverProps) {
     }
   }, []);
 
-  console.log(session?.user);
+  // console.log(session?.user);
   return (
     <Popover>
       <PopoverTrigger asChild>

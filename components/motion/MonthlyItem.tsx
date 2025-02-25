@@ -5,7 +5,7 @@ import MonthlyItemWrapper from '../cards/MonthlyItemWrapper';
 import { motion } from 'framer-motion';
 // import { formatTo12HourTime } from '@/lib/utils';
 import dateformat from 'dateformat';
-import { formatDuration } from '@/lib/utils';
+import { formatDuration, getFuelConsumption } from '@/lib/utils';
 
 const Row = ({ title, value }: { title: string; value: string }) => {
   return (
@@ -16,7 +16,13 @@ const Row = ({ title, value }: { title: string; value: string }) => {
   );
 };
 
-function MonthlyItem({ item }: { item: MonthlyItem }) {
+function MonthlyItem({
+  item,
+  device,
+}: {
+  item: MonthlyItem;
+  device: RedisDevice;
+}) {
   return (
     <MonthlyItemWrapper day={item._id.day} distance={item.distance} unit="KM">
       <motion.div
@@ -43,6 +49,11 @@ function MonthlyItem({ item }: { item: MonthlyItem }) {
         />
         <Row
           title="Running Time"
+          value={item.duration ? formatDuration(item.duration) : '0 min'}
+        />
+
+        <Row
+          title="Active Time"
           value={
             item.running_time ? formatDuration(item.running_time) : '0 min'
           }
@@ -62,10 +73,19 @@ function MonthlyItem({ item }: { item: MonthlyItem }) {
           value={item.idle_time ? formatDuration(item.idle_time) : '0 min'}
         />
 
-        <Row
-          title="Fuel Consumtion"
-          value={item.idle_time ? formatDuration(item.idle_time) : '0 min'}
-        />
+        {device.mileage !== undefined && device.mileage > 0 && (
+          <Row
+            title="Fuel Consumtion"
+            value={
+              getFuelConsumption(
+                item.distance,
+                device.mileage,
+                device.congestion_consumption,
+                item.congestion_time
+              ) + ' lit'
+            }
+          />
+        )}
       </motion.div>
     </MonthlyItemWrapper>
   );

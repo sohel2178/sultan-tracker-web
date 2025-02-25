@@ -1,19 +1,21 @@
-import { auth } from '@/auth';
 import GoogleMapComponent from '@/components/map/GoogleMapComponent';
 import ROUTES from '@/constants/route';
 import { GetRedisDevice } from '@/lib/actions/device.action';
 import { redirect } from 'next/navigation';
 
-async function LiveTracking() {
-  const id: string = '359015562295878';
+async function LiveTracking({ params }: RouteParams) {
+  const { id } = await params;
+  const qid: string = '359015562295878';
 
-  const session = await auth();
+  const { success, data: device } = await GetRedisDevice({ _id: qid });
 
-  if (!session?.user) return redirect(ROUTES.LOGIN);
+  // console.log(error);
 
-  const { success, data: device } = await GetRedisDevice({ _id: id });
+  if (!success || !device?.geo) return redirect(ROUTES.CLIENT_DEVICES);
 
-  if (!success || !device?.geo) return redirect(ROUTES.DEVICES);
+  device._id = id;
+
+  // if (!success || !device?.geo) return redirect(ROUTES.DEVICES);
 
   // console.log(device);
   return (

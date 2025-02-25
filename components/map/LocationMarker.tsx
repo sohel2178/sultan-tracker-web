@@ -7,7 +7,6 @@ import { getGreatCircleBearing } from 'geolib';
 import { database, ref, onChildChanged } from '@/lib/firebase-client';
 import VehiclePoliline from './VehiclePoliline';
 import VehicleInfo from '../motion/VehicleInfo';
-import MapDeviceList from '../motion/MapDeviceList';
 
 function LocationMarker({ device }: { device: RedisDevice }) {
   const [geo, setGeo] = useState<Geo>(device.geo);
@@ -96,7 +95,7 @@ function LocationMarker({ device }: { device: RedisDevice }) {
       <VehiclePoliline locations={locations} />
 
       <VehicleInfo title="Vehicle Info" geo={geo} device={device} />
-      <MapDeviceList />
+      {/* <MapDeviceList /> */}
     </div>
   );
 }

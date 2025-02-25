@@ -7,6 +7,7 @@ import OffOn from '../OffOn';
 import { formatLocalTime, getStopDuration } from '@/lib/utils';
 
 import { getDistance } from 'geolib';
+import Speed from './Speed';
 
 const plurl =
   'https://eu1.locationiq.com/v1/reverse.php?key=pk.5bb41df99bb77e1a059a77cfd4a61d15';
@@ -104,8 +105,8 @@ function VehicleInfo({ title, geo, device }: Props) {
           <div className="flex justify-between items-center">
             <p className="uppercase">speed</p>
             <div className="flex gap-3 items-center ">
-              <div className="flex justify-center bg-gray-900 text-white items-center size-8 dark:bg-white dark:text-gray-800 rounded-full">
-                {geo.speed}
+              <div className="flex justify-center p-2 bg-gray-900 text-white items-center size-10 dark:bg-white dark:text-gray-800 rounded-full">
+                <Speed speed={geo.speed ? geo.speed : 0} />
               </div>
               <p className="uppercase">kmph</p>
             </div>

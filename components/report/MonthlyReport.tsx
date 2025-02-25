@@ -136,7 +136,7 @@ function MonthlyReport({ device }: Props) {
         ) : (
           <div className="flex w-full flex-wrap gap-4 xl:gap-8">
             {monthlyData.map((x) => (
-              <MonthlyItem key={x._id.day} item={x} />
+              <MonthlyItem key={x._id.day} item={x} device={device} />
             ))}
           </div>
         )}

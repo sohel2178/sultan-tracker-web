@@ -23,6 +23,7 @@ const ROUTES = {
   DEVICES: '/admin/devices',
   ADD_DEVICE: '/admin/devices/create',
   EDIT_DEVICE: (id: string) => `/admin/devices/${id}/edit`,
+  ADMIN_DAILY_REPORT: (id: string) => `/admin/devices/${id}/daily-report`,
   ASSIGN_DEVICE: (id: string) => `/admin/devices/${id}/assign`,
   LIVE_TRACKING: (id: string) => `/admin/devices/${id}/live-tracking`,
 

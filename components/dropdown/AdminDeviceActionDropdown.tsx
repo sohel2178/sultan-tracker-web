@@ -47,7 +47,7 @@ function AdminDeviceActionDropdown({ id }: { id: string }) {
 
           <DropdownMenuItem className="cursor-pointer hover:scale-110">
             <Button variant="outline" className="w-full">
-              Daily Report
+              <Link href={ROUTES.ADMIN_DAILY_REPORT(id)}>Daily Report</Link>
             </Button>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer hover:scale-110">
