@@ -57,7 +57,7 @@ function ClientDeviceActionDropdown({ id }: { id: string }) {
 
           <DropdownMenuItem className="cursor-pointer hover:scale-110">
             <Button variant="outline" className="w-full">
-              Speed Report
+              <Link href={ROUTES.CLIENT_SPEED_REPORT(id)}>Speed Report</Link>
             </Button>
           </DropdownMenuItem>
         </DropdownMenuGroup>

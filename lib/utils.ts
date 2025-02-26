@@ -265,3 +265,19 @@ export const getFuelConsumption = (
 
   return Number((congCons + distConsumtion).toFixed(2));
 };
+
+export function minToString(timeInMin: number): string {
+  const pad = (num: number): string => num.toString().padStart(2, '0');
+
+  let hour = Math.floor(timeInMin / 60);
+  const min = timeInMin % 60;
+
+  const suffix = hour < 12 ? ' AM' : ' PM';
+
+  hour = hour % 12;
+  if (hour === 0) {
+    hour = 12;
+  }
+
+  return `${pad(hour)}:${pad(min)}${suffix}`;
+}

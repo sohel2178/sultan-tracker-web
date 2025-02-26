@@ -5,6 +5,7 @@ import React, { createContext, ReactNode, useContext, useState } from 'react';
 interface UserContextType {
   devices: RedisDevice[];
   setDevices: (devices: RedisDevice[]) => void;
+  getSelectDevice: (id: string) => RedisDevice | null;
 }
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -20,8 +21,14 @@ function UserProvider({
 }) {
   const [devices, setDevices] = useState<RedisDevice[]>(initialDevices);
 
+  const getSelectDevice = (id: string) => {
+    if (devices.length === 0) return null;
+
+    return devices.filter((x) => x._id === id)[0];
+  };
+
   return (
-    <UserContext.Provider value={{ devices, setDevices }}>
+    <UserContext.Provider value={{ devices, setDevices, getSelectDevice }}>
       {children}
     </UserContext.Provider>
   );

@@ -300,6 +300,30 @@ interface MonthlyData {
   datas: RLocation[];
 }
 
+interface SpeedFrequency {
+  _id: number;
+  count: number;
+  avg: number;
+}
+
+interface SpeedTimeline {
+  max: number;
+  min: number;
+  avg: number;
+  time: number;
+}
+
+interface DailySpeedReport {
+  info?: {
+    _id: string;
+    max: number;
+    min: number;
+    avg: number;
+  };
+  frequency?: SpeedFrequency[];
+  data?: SpeedTimeline[];
+}
+
 interface MonthlyItem {
   _id: MonthlyId;
   total_time: number;
